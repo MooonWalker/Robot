@@ -1,5 +1,6 @@
 
-void computeIMU () {
+void computeIMU () 
+{
   uint8_t axis;
   static int16_t gyroADCprevious[3] = {0,0,0};
   int16_t gyroADCp[3];
@@ -20,7 +21,8 @@ void computeIMU () {
     f.NUNCHUKDATA = 1;
     while(f.NUNCHUKDATA) ACC_getADC(); // For this interleaving reading, we must have a gyro update at this point (less delay)
 
-    for (axis = 0; axis < 3; axis++) {
+    for (axis = 0; axis < 3; axis++) 
+    {
       // empirical, we take a weighted value of the current and the previous values
       // /4 is to average 4 values, note: overflow is not possible for WMP gyro here
       gyroData[axis] = (gyroADC[axis]*3+gyroADCprevious[axis])>>2;

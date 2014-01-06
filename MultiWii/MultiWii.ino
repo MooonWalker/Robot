@@ -1,21 +1,12 @@
-/*
-MultiWiiCopter by Alexandre Dubus
-www.multiwii.com
-March  2013     V2.2
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version. see <http://www.gnu.org/licenses/>
-*/
-
 #include <avr/io.h>
 
 #include "config.h"
 #include "def.h"
 
-
 #include <avr/pgmspace.h>
 #define  VERSION  220
+
+//Board alias PROMINI
 
 /*********** RC alias *****************/
 enum rc {
@@ -1171,7 +1162,9 @@ void loop () {
       else {f.PASSTHRU_MODE = 0;}
     #endif
  
-  } else { // not in rc loop
+  } 
+  else 
+  { // not in rc loop
     static uint8_t taskOrder=0; // never call all functions in the same loop, to avoid high delay spikes
     if(taskOrder>4) taskOrder-=5;
     switch (taskOrder) {
