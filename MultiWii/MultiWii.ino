@@ -6,10 +6,13 @@
 #include <avr/pgmspace.h>
 #define  VERSION  220
 
-//Board alias PROMINI
+//Board alias GY_521
+//ACC 1
+//GYRO 1
 
 /*********** RC alias *****************/
-enum rc {
+enum rc 
+{
   ROLL,
   PITCH,
   YAW,
@@ -20,7 +23,8 @@ enum rc {
   AUX4
 };
 
-enum pid {
+enum pid 
+{
   PIDROLL,
   PIDPITCH,
   PIDYAW,
@@ -47,7 +51,8 @@ const char pidnames[] PROGMEM =
   "VEL;"
 ;
 
-enum box {
+enum box 
+{
   BOXARM,
   #if ACC
     BOXANGLE,
@@ -59,11 +64,7 @@ enum box {
   #ifdef VARIOMETER
     BOXVARIO,
   #endif
-  #if MAG
-    BOXMAG,
-    BOXHEADFREE,
-    BOXHEADADJ, // acquire heading for HEADFREE mode
-  #endif
+
   #if defined(SERVO_TILT) || defined(GIMBAL)  || defined(SERVO_MIX_TILT)
     BOXCAMSTAB,
   #endif
@@ -206,7 +207,7 @@ static uint32_t currentTime = 0;
 static uint16_t previousTime = 0;
 static uint16_t cycleTime = 0;     // this is the number in micro second to achieve a full loop, it can differ a little and is taken into account in the PID loop
 static uint16_t calibratingA = 0;  // the calibration is done in the main loop. Calibrating decreases at each cycle down to 0, then we enter in a normal mode.
-static uint16_t calibratingB = 0;  // baro calibration = get new ground pressure value
+//static uint16_t calibratingB = 0;  // baro calibration = get new ground pressure value
 static uint16_t calibratingG;
 static uint16_t acc_1G;            // this is the 1G measured acceleration
 static uint16_t acc_25deg;
@@ -227,7 +228,8 @@ static int16_t  vario = 0;              // variometer in cm/s
 static int16_t  debug[4];
 static int16_t  sonarAlt; //to think about the unit
 
-struct flags_struct {
+struct flags_struct 
+{
   uint8_t OK_TO_ARM :1 ;
   uint8_t ARMED :1 ;
   uint8_t I2C_INIT_DONE :1 ; // For i2c gps we have to now when i2c init is done, so we can update parameters to the i2cgps from eeprom (at startup it is done in setup())
@@ -255,6 +257,7 @@ struct flags_struct {
   static uint16_t powerMax = 0;           // highest ever current;
   static int32_t  BAROaltMax;         // maximum value
 #endif
+
 #if defined(LOG_VALUES) || defined(LCD_TELEMETRY) || defined(ARMEDTIMEWARNING)  || defined(LOG_PERMANENT)
   static uint32_t armedTime = 0;
 #endif
@@ -363,7 +366,8 @@ static struct {
 } global_conf;
 
 
-static struct {
+static struct 
+{
   uint8_t checkNewConf;
   uint8_t P8[PIDITEMS], I8[PIDITEMS], D8[PIDITEMS];
   uint8_t rcRate8;
@@ -461,21 +465,7 @@ static struct {
   static int16_t  nav[2];
   static int16_t  nav_rated[2];    //Adding a rate controller to the navigation to make it smoother
 
-  // default POSHOLD control gains
-  #define POSHOLD_P              .11
-  #define POSHOLD_I              0.0
-  #define POSHOLD_IMAX           20        // degrees
 
-  #define POSHOLD_RATE_P         2.0
-  #define POSHOLD_RATE_I         0.08      // Wind control
-  #define POSHOLD_RATE_D         0.045     // try 2 or 3 for POSHOLD_RATE 1
-  #define POSHOLD_RATE_IMAX      20        // degrees
-
-  // default Navigation PID gains
-  #define NAV_P                  1.4
-  #define NAV_I                  0.20      // Wind control
-  #define NAV_D                  0.08      //
-  #define NAV_IMAX               20        // degrees
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Serial GPS only variables
@@ -486,37 +476,40 @@ static struct {
   static uint8_t nav_mode = NAV_MODE_NONE; // Navigation mode
  
   static uint8_t alarmArray[16];           // array
- 
-#if BARO
-  static int32_t baroPressure;
-  static int32_t baroTemperature;
-  static int32_t baroPressureSum;
-#endif
 
-void annexCode() { // this code is excetuted at each loop and won't interfere with control loop if it lasts less than 650 microseconds
+void annexCode() 
+{ // this code is excetuted at each loop and won't interfere with control loop if it lasts less than 650 microseconds
   static uint32_t calibratedAccTime;
   uint16_t tmp,tmp2;
   uint8_t axis,prop1,prop2;
 
   #define BREAKPOINT 1500
   // PITCH & ROLL only dynamic PID adjustemnt,  depending on throttle value
-  if (rcData[THROTTLE]<BREAKPOINT) {
+  if (rcData[THROTTLE]<BREAKPOINT) 
+  {
     prop2 = 100;
-  } else {
-    if (rcData[THROTTLE]<2000) {
+  } 
+  else 
+  {
+    if (rcData[THROTTLE]<2000) 
+    {
       prop2 = 100 - (uint16_t)conf.dynThrPID*(rcData[THROTTLE]-BREAKPOINT)/(2000-BREAKPOINT);
-    } else {
+    } 
+    else 
+    {
       prop2 = 100 - conf.dynThrPID;
     }
   }
 
-  for(axis=0;axis<3;axis++) {
+  for(axis=0;axis<3;axis++) 
+  {
     tmp = min(abs(rcData[axis]-MIDRC),500);
     #if defined(DEADBAND)
       if (tmp>DEADBAND) { tmp -= DEADBAND; }
       else { tmp=0; }
     #endif
-    if(axis!=2) { //ROLL & PITCH
+    if(axis!=2) 
+    { //ROLL & PITCH
       tmp2 = tmp/100;
       rcCommand[axis] = lookupPitchRollRC[tmp2] + (tmp-tmp2*100) * (lookupPitchRollRC[tmp2+1]-lookupPitchRollRC[tmp2]) / 100;
       prop1 = 100-(uint16_t)conf.rollPitchRate*tmp/500;
@@ -534,7 +527,8 @@ void annexCode() { // this code is excetuted at each loop and won't interfere wi
   tmp2 = tmp/100;
   rcCommand[THROTTLE] = lookupThrottleRC[tmp2] + (tmp-tmp2*100) * (lookupThrottleRC[tmp2+1]-lookupThrottleRC[tmp2]) / 100; // [0;1000] -> expo -> [conf.minthrottle;MAXTHROTTLE]
 
-  if(f.HEADFREE_MODE) { //to optimize
+  if(f.HEADFREE_MODE) 
+  { //to optimize
     float radDiff = (heading - headFreeModeHold) * 0.0174533f; // where PI/180 ~= 0.0174533
     float cosDiff = cos(radDiff);
     float sinDiff = sin(radDiff);
@@ -543,47 +537,8 @@ void annexCode() { // this code is excetuted at each loop and won't interfere wi
     rcCommand[PITCH] = rcCommand_PITCH;
   }
 
-  #if defined(POWERMETER_HARD)
-    uint16_t pMeterRaw;               // used for current reading
-    static uint16_t psensorTimer = 0;
-    if (! (++psensorTimer % PSENSORFREQ)) {
-      pMeterRaw =  analogRead(PSENSORPIN);
-      //lcdprint_int16(pMeterRaw); LCDcrlf();
-      powerValue = ( conf.psensornull > pMeterRaw ? conf.psensornull - pMeterRaw : pMeterRaw - conf.psensornull); // do not use abs(), it would induce implicit cast to uint and overrun
-      if ( powerValue < 333) {  // only accept reasonable values. 333 is empirical
-      #ifdef LCD_TELEMETRY
-        if (powerValue > powerMax) powerMax = powerValue;
-      #endif
-      } else {
-        powerValue = 333;
-      }        
-      pMeter[PMOTOR_SUM] += (uint32_t) powerValue;
-    }
-  #endif
-  #if defined(BUZZER)
-    #if defined(VBAT)
-      static uint8_t vbatTimer = 0;
-      static uint8_t ind = 0;
-      uint16_t vbatRaw = 0;
-      static uint16_t vbatRawArray[8];
-      if (! (++vbatTimer % VBATFREQ)) {
-        vbatRawArray[(ind++)%8] = analogRead(V_BATPIN);
-        for (uint8_t i=0;i<8;i++) vbatRaw += vbatRawArray[i];
-        vbat = (vbatRaw*2) / conf.vbatscale; // result is Vbatt in 0.1V steps
-      }
-    #endif
-    alarmHandler(); // external buzzer routine that handles buzzer events globally now
-  #endif  
 
-  #if defined(RX_RSSI)
-    static uint8_t sig = 0;
-    uint16_t rssiRaw = 0;
-    static uint16_t rssiRawArray[8];
-    rssiRawArray[(sig++)%8] = analogRead(RX_RSSI_PIN);
-    for (uint8_t i=0;i<8;i++) rssiRaw += rssiRawArray[i];
-    rssi = rssiRaw / 8;       
-  #endif
-
+  
   if ( (calibratingA>0 && ACC ) || (calibratingG>0) ) { // Calibration phasis
     LEDPIN_TOGGLE;
   } else {
@@ -591,18 +546,8 @@ void annexCode() { // this code is excetuted at each loop and won't interfere wi
     if (f.ARMED) {LEDPIN_ON;}
   }
 
-  #if defined(LED_RING)
-    static uint32_t LEDTime;
-    if ( currentTime > LEDTime ) {
-      LEDTime = currentTime + 50000;
-      i2CLedRingState();
-    }
-  #endif
-
-  #if defined(LED_FLASHER)
-    auto_switch_led_flasher();
-  #endif
-
+  
+ 
   if ( currentTime > calibratedAccTime ) {
     if (! f.SMALL_ANGLES_25) {
       // the multi uses ACC and is not calibrated or is too much inclinated
@@ -622,45 +567,9 @@ void annexCode() { // this code is excetuted at each loop and won't interfere wi
     #endif
   #endif
 
-  #if defined(POWERMETER)
-    intPowerMeterSum = (pMeter[PMOTOR_SUM]/conf.pleveldiv);
-    intPowerTrigger1 = conf.powerTrigger1 * PLEVELSCALE; 
-  #endif
 
-  #ifdef LCD_TELEMETRY_AUTO
-    static char telemetryAutoSequence []  = LCD_TELEMETRY_AUTO;
-    static uint8_t telemetryAutoIndex = 0;
-    static uint16_t telemetryAutoTimer = 0;
-    if ( (telemetry_auto) && (! (++telemetryAutoTimer % LCD_TELEMETRY_AUTO_FREQ) )  ){
-      telemetry = telemetryAutoSequence[++telemetryAutoIndex % strlen(telemetryAutoSequence)];
-      LCDclear(); // make sure to clear away remnants
-    }
-  #endif  
-  #ifdef LCD_TELEMETRY
-    static uint16_t telemetryTimer = 0;
-    if (! (++telemetryTimer % LCD_TELEMETRY_FREQ)) {
-      #if (LCD_TELEMETRY_DEBUG+0 > 0)
-        telemetry = LCD_TELEMETRY_DEBUG;
-      #endif
-      if (telemetry) lcd_telemetry();
-    }
-  #endif
-
-  #if GPS & defined(GPS_LED_INDICATOR)       // modified by MIS to use STABLEPIN LED for number of sattelites indication
-    static uint32_t GPSLEDTime;              // - No GPS FIX -> LED blink at speed of incoming GPS frames
-    static uint8_t blcnt;                    // - Fix and sat no. bellow 5 -> LED off
-    if(currentTime > GPSLEDTime) {           // - Fix and sat no. >= 5 -> LED blinks, one blink for 5 sat, two blinks for 6 sat, three for 7 ...
-      if(f.GPS_FIX && GPS_numSat >= 5) {
-        if(++blcnt > 2*GPS_numSat) blcnt = 0;
-        GPSLEDTime = currentTime + 150000;
-        if(blcnt >= 10 && ((blcnt%2) == 0)) {STABLEPIN_ON;} else {STABLEPIN_OFF;}
-      }else{
-        if((GPS_update == 1) && !f.GPS_FIX) {STABLEPIN_ON;} else {STABLEPIN_OFF;}
-        blcnt = 0;
-      }
-    }
-  #endif
-
+ 
+ 
   #if defined(LOG_VALUES) && (LOG_VALUES >= 2)
     if (cycleTime > cycleTimeMax) cycleTimeMax = cycleTime; // remember highscore
     if (cycleTime < cycleTimeMin) cycleTimeMin = cycleTime; // remember lowscore
@@ -678,118 +587,28 @@ void annexCode() { // this code is excetuted at each loop and won't interfere wi
       #endif
     #endif
   }
-}
 
-void setup() {
-  #if !defined(GPS_PROMINI)
-    SerialOpen(0,SERIAL0_COM_SPEED);
-    #if defined(PROMICRO)
-      SerialOpen(1,SERIAL1_COM_SPEED);
-    #endif
-    #if defined(MEGA)
-      SerialOpen(1,SERIAL1_COM_SPEED);
-      SerialOpen(2,SERIAL2_COM_SPEED);
-      SerialOpen(3,SERIAL3_COM_SPEED);
-    #endif
-  #endif
+} //end of annex code()
+
+
+void setup() 
+{
+
   LEDPIN_PINMODE;
-  POWERPIN_PINMODE;
-  BUZZERPIN_PINMODE;
-  STABLEPIN_PINMODE;
-  POWERPIN_OFF;
-  initOutput();
-  #ifdef MULTIPLE_CONFIGURATION_PROFILES
-    for(global_conf.currentSet=0; global_conf.currentSet<3; global_conf.currentSet++) {  // check all settings integrity
-      readEEPROM();
-    }
-  #else
-    global_conf.currentSet=0;
-    readEEPROM();
-  #endif
-  readGlobalSet();
-  readEEPROM();                                    // load current setting data
-  blinkLED(2,40,global_conf.currentSet+1);          
-  configureReceiver();
-  #if defined (PILOTLAMP) 
-    PL_INIT;
-  #endif
-  #if defined(OPENLRSv2MULTI)
-    initOpenLRS();
-  #endif
+
   initSensors();
-  #if defined(I2C_GPS) || defined(GPS_SERIAL) || defined(GPS_FROM_OSD)
-    GPS_set_pids();
-  #endif
+
   previousTime = micros();
-  #if defined(GIMBAL)
-   calibratingA = 512;
-  #endif
+
   calibratingG = 512;
-  calibratingB = 200;  // 10 seconds init_delay + 200 * 25 ms = 15 seconds before ground pressure settles
-  #if defined(POWERMETER)
-    for(uint8_t i=0;i<=PMOTOR_SUM;i++)
-      pMeter[i]=0;
-  #endif
-  /************************************/
-  #if defined(GPS_SERIAL)
-    GPS_SerialInit();
-    for(uint8_t i=0;i<=5;i++){
-      GPS_NewData(); 
-      LEDPIN_ON
-      delay(20);
-      LEDPIN_OFF
-      delay(80);
-    }
-    if(!GPS_Present){
-      SerialEnd(GPS_SERIAL);
-      SerialOpen(0,SERIAL0_COM_SPEED);
-    }
-    #if !defined(GPS_PROMINI)
-      GPS_Present = 1;
-    #endif
-    GPS_Enable = GPS_Present;    
-  #endif
-  /************************************/
- 
-  #if defined(I2C_GPS) || defined(TINY_GPS) || defined(GPS_FROM_OSD)
-   GPS_Enable = 1;
-  #endif
-  
-  #if defined(LCD_ETPP) || defined(LCD_LCD03) || defined(OLED_I2C_128x64) || defined(LCD_TELEMETRY_STEP)
-    initLCD();
-  #endif
-  #ifdef LCD_TELEMETRY_DEBUG
-    telemetry_auto = 1;
-  #endif
-  #ifdef LCD_CONF_DEBUG
-    configurationLoop();
-  #endif
-  #ifdef LANDING_LIGHTS_DDR
-    init_landing_lights();
-  #endif
-  ADCSRA |= _BV(ADPS2) ; ADCSRA &= ~_BV(ADPS1); ADCSRA &= ~_BV(ADPS0); // this speeds up analogRead without loosing too much resolution: http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1208715493/11
-  #if defined(LED_FLASHER)
-    init_led_flasher();
-    led_flasher_set_sequence(LED_FLASHER_SEQUENCE);
-  #endif
+
   f.SMALL_ANGLES_25=1; // important for gyro only conf
-  #ifdef LOG_PERMANENT
-    // read last stored set
-    readPLog();
-    plog.lifetime += plog.armed_time / 1000000;
-    plog.start++;         // #powercycle/reset/initialize events
-    // dump plog data to terminal
-    #ifdef LOG_PERMANENT_SHOW_AT_STARTUP
-      dumpPLog(0);
-    #endif
-    plog.armed_time = 0;   // lifetime in seconds
-    //plog.running = 0;       // toggle on arm & disarm to monitor for clean shutdown vs. powercut
-  #endif
 
-  debugmsg_append_str("initialization completed\n");
-}
 
-void go_arm() {
+} // setup()
+
+void go_arm() 
+{
   if(calibratingG == 0 && f.ACC_CALIBRATED 
   #if defined(FAILSAFE)
     && failsafeCnt < 2
@@ -818,7 +637,8 @@ void go_arm() {
     alarmArray[8] = 1;
   }
 }
-void go_disarm() {
+void go_disarm() 
+{
   if (f.ARMED) {
     f.ARMED = 0;
     #ifdef LOG_PERMANENT
@@ -832,7 +652,9 @@ void go_disarm() {
     #endif
   }
 }
-void servos2Neutral() {
+
+void servos2Neutral() 
+{
   #ifdef TRI
     servo[5] = 1500; // we center the yaw servo in conf mode
     writeServos();
@@ -1038,16 +860,7 @@ void loop () {
 
     // note: if FAILSAFE is disable, failsafeCnt > 5*FAILSAFE_DELAY is always false
     #if ACC
-      if ( rcOptions[BOXANGLE] || (failsafeCnt > 5*FAILSAFE_DELAY) ) { 
-        // bumpless transfer to Level mode
-        if (!f.ANGLE_MODE) {
-          errorAngleI[ROLL] = 0; errorAngleI[PITCH] = 0;
-          f.ANGLE_MODE = 1;
-        }  
-      } else {
-        // failsafe support
-        f.ANGLE_MODE = 0;
-      }
+     
       if ( rcOptions[BOXHORIZON] ) {
         f.ANGLE_MODE = 0;
         if (!f.HORIZON_MODE) {

@@ -81,101 +81,9 @@
 /**************************************************************************************/
 /***************             motor and servo numbers               ********************/
 /**************************************************************************************/
-#if defined (AIRPLANE) || defined(FLYING_WING)|| defined(SINGLECOPTER)|| defined(DUALCOPTER)
-  #define FIXEDWING
-#endif
 
-#if defined(HELI_120_CCPM) || defined(HELI_90_DEG)
-  #define HELICOPTER
-#endif
+#define NUMBER_MOTOR     4
 
-#if defined(BI) || defined(TRI) || defined(SERVO_TILT) || defined(GIMBAL) || defined(FLYING_WING) || defined(AIRPLANE) || defined(CAMTRIG) || defined(HELICOPTER) || defined(SERVO_MIX_TILT)|| defined(SINGLECOPTER)|| defined(DUALCOPTER)
-  #define SERVO
-#endif
-
-#if defined(GIMBAL)
-  #define NUMBER_MOTOR     0
-  #define PRI_SERVO_FROM   1 // use servo from 1 to 2
-  #define PRI_SERVO_TO     2
-#elif defined(FLYING_WING)
-  #define NUMBER_MOTOR     1
-  #define PRI_SERVO_FROM   1 // use servo from 1 to 2
-  #define PRI_SERVO_TO     2
-  
-#elif defined(SINGLECOPTER)
-  #define NUMBER_MOTOR     1
-  #define PRI_SERVO_FROM   4 // use servo from 4 to 7
-  #define PRI_SERVO_TO     7
-#elif defined(DUALCOPTER)
-  #define NUMBER_MOTOR     2
-  #define PRI_SERVO_FROM   4 // use servo from 5 to 6
-  #define PRI_SERVO_TO     6
-  
-#elif defined(AIRPLANE)
-    #if defined (USE_THROTTLESERVO)
-      #define NUMBER_MOTOR     0
-    #else
-      #define NUMBER_MOTOR     1
-    #endif
-    #if defined(FLAPS) 
-      #define PRI_SERVO_FROM   3 // use servo from 3 to 8    
-      #undef CAMTRIG             // Disable Camtrig on A2
-    #else
-      #define PRI_SERVO_FROM   4 // use servo from 4 to 8
-    #endif  
-  #define PRI_SERVO_TO     8
-#elif defined(BI)
-  #define NUMBER_MOTOR     2
-  #define PRI_SERVO_FROM   5 // use servo from 5 to 6
-  #define PRI_SERVO_TO     6
-#elif defined(TRI)
-  #define NUMBER_MOTOR     3
-  #define PRI_SERVO_FROM   6 // use only servo 6
-  #define PRI_SERVO_TO     6
-#elif defined(QUADP) || defined(QUADX) || defined(Y4)|| defined(VTAIL4)
-  #define NUMBER_MOTOR     4
-#elif defined(Y6) || defined(HEX6) || defined(HEX6X) || defined(HEX6H)
-  #define NUMBER_MOTOR     6
-#elif defined(OCTOX8) || defined(OCTOFLATP) || defined(OCTOFLATX)
-  #define NUMBER_MOTOR     8
-#elif defined(HELICOPTER)
-  #ifdef HELI_USE_SERVO_FOR_THROTTLE
-    #define NUMBER_MOTOR     0 // use servo to drive throttle output
-    #define PRI_SERVO_FROM   4 // use servo from 4 to 8
-    #define PRI_SERVO_TO     8
-  #else
-    #define NUMBER_MOTOR     1 // use 1 motor for throttle
-    #define PRI_SERVO_FROM   4 // use servo from 4 to 7
-    #define PRI_SERVO_TO     7
-  #endif
-#endif
-
-
-#if (defined(SERVO_TILT)|| defined(SERVO_MIX_TILT))&& defined(CAMTRIG)
-  #define SEC_SERVO_FROM   1 // use servo from 1 to 3
-  #define SEC_SERVO_TO     3
-#else
-  #if defined(SERVO_TILT)|| defined(SERVO_MIX_TILT)
-    // if A0 and A1 is taken by motors, we can use A2 and 12 for Servo tilt
-    #if defined(A0_A1_PIN_HEX) && (NUMBER_MOTOR == 6) && defined(PROMINI)
-      #define SEC_SERVO_FROM   3 // use servo from 3 to 4
-      #define SEC_SERVO_TO     4
-    #else
-      #if !defined(MEGA_HW_PWM_SERVOS) // if HW Gimbal is active we dont need the SW PWM defines
-        #define SEC_SERVO_FROM   1 // use servo from 1 to 2
-        #define SEC_SERVO_TO     2
-      #endif
-    #endif
-  #endif
-  #if defined(CAMTRIG)
-    #define SEC_SERVO_FROM   3 // use servo 3
-    #define SEC_SERVO_TO     3
-  #endif
-#endif
-
-#if defined(SIRIUS_AIR) || defined(SIRIUS_AIR_GPS)
-  #define RCAUX2PIND17
-#endif
 
 /**************************   atmega328P (Promini)  ************************************/
 #if defined(PROMINI)
@@ -1045,14 +953,6 @@
   #endif
 #endif
 
-#if defined(DROTEK_6DOFv2)
-  #define ITG3200
-  #define BMA180
-  #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -Y; accADC[PITCH]  =  X; accADC[YAW]  =  Z;}
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] = -X; gyroADC[PITCH] = -Y; gyroADC[YAW] = -Z;}
-  #define ITG3200_ADDRESS 0X69
-#endif
-
 #if defined(DROTEK_6DOF_MPU)
   #define MPU6050
   #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -Y; accADC[PITCH]  =  X; accADC[YAW]  =  Z;}
@@ -1073,11 +973,6 @@
   #undef INTERNAL_I2C_PULLUPS
 #endif
 
-#if defined(FLYDUINO_MPU)
-  #define MPU6050
-  #define ACC_ORIENTATION(X, Y, Z) {accADC[ROLL] = X; accADC[PITCH] = Y; accADC[YAW] = Z;}
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] = -Y; gyroADC[PITCH] = X; gyroADC[YAW] = -Z;}
-#endif
 
 #if defined(MONGOOSE1_0)
   #define ITG3200
@@ -1089,23 +984,6 @@
   #define MAG_ORIENTATION(X, Y, Z)  {magADC[ROLL]  = -X; magADC[PITCH]  = -Y; magADC[YAW]  = -Z;}
   #define ADXL345_ADDRESS 0x53
   #undef INTERNAL_I2C_PULLUPS
-#endif
-
-#if defined(CRIUS_LITE)
-  #define ITG3200
-  #define ADXL345
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] =  Y; gyroADC[PITCH] = -X; gyroADC[YAW] = -Z;}
-  #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -X; accADC[PITCH]  = -Y; accADC[YAW]  =  Z;}
-#endif
-
-#if defined(CRIUS_SE)
-  #define ITG3200
-  #define BMA180
-  #define HMC5883
-  #define BMP085
-  #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -X; accADC[PITCH]  = -Y; accADC[YAW]  =  Z;}
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] =  Y; gyroADC[PITCH] = -X; gyroADC[YAW] = -Z;}
-  #define MAG_ORIENTATION(X, Y, Z)  {magADC[ROLL]  =  X; magADC[PITCH]  =  Y; magADC[YAW]  = -Z;}
 #endif
 
 #if defined(BOARD_PROTO_1)
@@ -1135,39 +1013,6 @@
   #define STABLEPIN_OFF PORTC &= ~(1<<2);
 #endif
 
-#if defined(GY_80)
-  #define L3G4200D
-  #define ADXL345
-  #define HMC5883
-  #define BMP085
-  #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -X; accADC[PITCH]  = -Y; accADC[YAW]  =  Z;}
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] =  Y; gyroADC[PITCH] = -X; gyroADC[YAW] = -Z;}
-  #define MAG_ORIENTATION(X, Y, Z)  {magADC[ROLL]  =  X; magADC[PITCH]  =  Y; magADC[YAW]  = -Z;}
-  #undef INTERNAL_I2C_PULLUPS
-  #define ADXL345_ADDRESS 0x53
-#endif
-
-#if defined(GY_85)
-  #define ITG3200
-  #define ADXL345
-  #define HMC5883
-  #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -X; accADC[PITCH]  = -Y; accADC[YAW]  =  Z;}
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] =  Y; gyroADC[PITCH] = -X; gyroADC[YAW] = -Z;}
-  #define MAG_ORIENTATION(X, Y, Z)  {magADC[ROLL]  =  X; magADC[PITCH]  =  Y; magADC[YAW]  = -Z;}
-  #undef INTERNAL_I2C_PULLUPS
-  #define ADXL345_ADDRESS 0x53
-#endif
-
-#if defined(GY_86)
-  #define MPU6050
-  #define HMC5883
-  #define MS561101BA
-  #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -X; accADC[PITCH]  = -Y; accADC[YAW]  =  Z;}
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] =  Y; gyroADC[PITCH] = -X; gyroADC[YAW] = -Z;}
-  #define MAG_ORIENTATION(X, Y, Z)  {magADC[ROLL]  =  X; magADC[PITCH]  =  Y; magADC[YAW]  = -Z;}
-  #define MPU6050_I2C_AUX_MASTER // MAG connected to the AUX I2C bus of MPU6050
-  #undef INTERNAL_I2C_PULLUPS
-#endif
 
 #if defined(GY_521)
   #define MPU6050
@@ -1176,16 +1021,6 @@
   #undef INTERNAL_I2C_PULLUPS
 #endif
 
-#if defined(INNOVWORKS_10DOF)
-  #define ITG3200
-  #define BMA180
-  #define BMP085
-  #define HMC5883
-  #define ACC_ORIENTATION(X, Y, Z)  {accADC[ROLL]  = -X; accADC[PITCH]  = -Y; accADC[YAW]  = Z;}
-  #define GYRO_ORIENTATION(X, Y, Z) {gyroADC[ROLL] = Y; gyroADC[PITCH] = -X; gyroADC[YAW] = -Z;}
-  #define MAG_ORIENTATION(X, Y, Z)  {magADC[ROLL]  = X; magADC[PITCH]  = Y; magADC[YAW]  = -Z;}
-  #undef INTERNAL_I2C_PULLUPS
-#endif
 
 #if defined(INNOVWORKS_6DOF)
   #define ITG3200

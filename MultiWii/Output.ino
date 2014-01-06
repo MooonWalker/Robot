@@ -331,7 +331,8 @@ void writeAllMotors(int16_t mc) {   // Sends commands to all motors
 /**************************************************************************************/
 /************        Initialize the PWM Timers and Registers         ******************/
 /**************************************************************************************/
-void initOutput() {
+void initOutput() 
+{
   /****************            mark all PWM pins as Output             ******************/
   for(uint8_t i=0;i<NUMBER_MOTOR;i++) {
     pinMode(PWM_PIN[i],OUTPUT);
@@ -466,7 +467,7 @@ void initOutput() {
     exit; // statement never reached
   #endif
   
-  writeAllMotors(MINCOMMAND);
+
   delay(300);
   #if defined(SERVO)
     initializeServo();
@@ -829,10 +830,7 @@ void mixTable() {
       servo[5] = constrain(conf.tri_yaw_middle + YAW_DIRECTION * axisPID[YAW], TRI_YAW_CONSTRAINT_MIN, TRI_YAW_CONSTRAINT_MAX); //REAR
     #endif
     #ifdef QUADP
-      motor[0] = PIDMIX( 0,+1,-1); //REAR
-      motor[1] = PIDMIX(-1, 0,+1); //RIGHT
-      motor[2] = PIDMIX(+1, 0,+1); //LEFT
-      motor[3] = PIDMIX( 0,-1,-1); //FRONT
+     
     #endif
     #ifdef QUADX
       motor[0] = PIDMIX(-1,+1,-1); //REAR_R
@@ -1276,10 +1274,9 @@ void mixTable() {
     maxMotor=motor[0];
     for(i=1; i< NUMBER_MOTOR; i++)
       if (motor[i]>maxMotor) maxMotor=motor[i];
-    for(i=0; i< NUMBER_MOTOR; i++) {
-      if (maxMotor > MAXTHROTTLE) // this is a way to still have good gyro corrections if at least one motor reaches its max.
-        motor[i] -= maxMotor - MAXTHROTTLE;
-      motor[i] = constrain(motor[i], conf.minthrottle, MAXTHROTTLE);
+    for(i=0; i< NUMBER_MOTOR; i++) 
+    {
+
       #if defined(ALTHOLD_FAST_THROTTLE_CHANGE)
         if (rcData[THROTTLE] < MINCHECK)
       #else
@@ -1291,7 +1288,7 @@ void mixTable() {
           motor[i] = MINCOMMAND;
         #endif
       if (!f.ARMED)
-        motor[i] = MINCOMMAND;
+        motor[i] = 1;
     }
   #endif // LEAVE_HEADROOM_FOR_MOTORS
   /****************                      Powermeter Log                    ******************/

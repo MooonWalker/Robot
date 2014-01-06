@@ -39,7 +39,7 @@ void readEEPROM() {
     if (tmp>0) y = 100-conf.thrMid8;
     if (tmp<0) y = conf.thrMid8;
     lookupThrottleRC[i] = 10*conf.thrMid8 + tmp*( 100-conf.thrExpo8+(int32_t)conf.thrExpo8*(tmp*tmp)/(y*y) )/10; // [0;1000]
-    lookupThrottleRC[i] = conf.minthrottle + (int32_t)(MAXTHROTTLE-conf.minthrottle)* lookupThrottleRC[i]/1000;            // [0;1000] -> [conf.minthrottle;MAXTHROTTLE]
+
   }
 
   #if defined(POWERMETER)
@@ -106,9 +106,6 @@ void LoadDefaults() {
   conf.P8[YAW]      = 68;  conf.I8[YAW]     = 45;  conf.D8[YAW]     = 0;
   conf.P8[PIDALT]   = 64; conf.I8[PIDALT]   = 25; conf.D8[PIDALT]   = 24;
   
-  conf.P8[PIDPOS]  = POSHOLD_P * 100;     conf.I8[PIDPOS]    = POSHOLD_I * 100;       conf.D8[PIDPOS]    = 0;
-  conf.P8[PIDPOSR] = POSHOLD_RATE_P * 10; conf.I8[PIDPOSR]   = POSHOLD_RATE_I * 100;  conf.D8[PIDPOSR]   = POSHOLD_RATE_D * 1000;
-  conf.P8[PIDNAVR] = NAV_P * 10;          conf.I8[PIDNAVR]   = NAV_I * 100;           conf.D8[PIDNAVR]   = NAV_D * 1000;
 
   conf.P8[PIDLEVEL] = 90; conf.I8[PIDLEVEL] = 10; conf.D8[PIDLEVEL] = 100;
   conf.P8[PIDMAG]   = 40;
@@ -171,7 +168,7 @@ void LoadDefaults() {
   #if defined(ARMEDTIMEWARNING)
     conf.armedtimewarning = ARMEDTIMEWARNING;
   #endif
-  conf.minthrottle = MINTHROTTLE;
+
   #ifdef GOVERNOR_P
     conf.governorP = GOVERNOR_P;
     conf.governorD = GOVERNOR_D;
