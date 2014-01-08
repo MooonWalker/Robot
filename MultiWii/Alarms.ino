@@ -34,7 +34,8 @@ Resources:
 3: PL BLUE
 4: PL RED
 */
-void alarmHandler(){
+void alarmHandler()
+{
   
   #if defined(RCOPTIONSBEEP)
     static uint8_t i = 0,firstrun = 1, last_rcOptions[CHECKBOXITEMS];

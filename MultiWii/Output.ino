@@ -265,30 +265,30 @@ void writeMotors() { // [1000;2000] => [125;250]
   #if defined(PROMINI)
     #if (NUMBER_MOTOR > 0)
       #ifndef EXT_MOTOR_RANGE 
-        OCR1A = motor[0]>>3; //  pin 9
+
       #else
         OCR1A = ((motor[0]>>2) - 250);
       #endif
     #endif
     #if (NUMBER_MOTOR > 1)
       #ifndef EXT_MOTOR_RANGE 
-        OCR1B = motor[1]>>3; //  pin 10
+
       #else
         OCR1B = ((motor[1]>>2) - 250);
       #endif
     #endif
     #if (NUMBER_MOTOR > 2)
       #ifndef EXT_MOTOR_RANGE
-        OCR2A = motor[2]>>3; //  pin 11
+
       #else
         OCR2A = ((motor[2]>>2) - 250);
       #endif
     #endif
     #if (NUMBER_MOTOR > 3)
       #ifndef EXT_MOTOR_RANGE
-        OCR2B = motor[3]>>3; //  pin 3
+
       #else
-        OCR2B = ((motor[3]>>2) - 250);
+
       #endif
     #endif
     #if (NUMBER_MOTOR > 4)
@@ -323,7 +323,7 @@ void writeMotors() { // [1000;2000] => [125;250]
 /**************************************************************************************/
 void writeAllMotors(int16_t mc) {   // Sends commands to all motors
   for (uint8_t i =0;i<NUMBER_MOTOR;i++) {
-    motor[i]=mc;
+
   }
   writeMotors();
 }
@@ -811,7 +811,7 @@ void mixTable() {
 
   #if NUMBER_MOTOR > 3
     //prevent "yaw jump" during yaw correction
-    axisPID[YAW] = constrain(axisPID[YAW],-100-abs(rcCommand[YAW]),+100+abs(rcCommand[YAW]));
+
   #endif
   /****************                   main Mix Table                ******************/
   #ifdef MY_PRIVATE_MIXING
@@ -1271,24 +1271,14 @@ void mixTable() {
         motor[i] = MINCOMMAND;
     }
   #else // LEAVE_HEADROOM_FOR_MOTORS
-    maxMotor=motor[0];
+
     for(i=1; i< NUMBER_MOTOR; i++)
-      if (motor[i]>maxMotor) maxMotor=motor[i];
+
     for(i=0; i< NUMBER_MOTOR; i++) 
     {
 
-      #if defined(ALTHOLD_FAST_THROTTLE_CHANGE)
-        if (rcData[THROTTLE] < MINCHECK)
-      #else
-        if ((rcData[THROTTLE] < MINCHECK) && !f.BARO_MODE)
-      #endif
-        #ifndef MOTOR_STOP
-          motor[i] = conf.minthrottle;
-        #else
-          motor[i] = MINCOMMAND;
-        #endif
-      if (!f.ARMED)
-        motor[i] = 1;
+     
+
     }
   #endif // LEAVE_HEADROOM_FOR_MOTORS
   /****************                      Powermeter Log                    ******************/
