@@ -27,15 +27,16 @@
     <UncachedRange />
     <BootSegment>2</BootSegment>
     <AsfFrameworkConfig>
-      <framework-data xmlns="">
-        <options />
-        <configurations />
-        <files />
-        <documentation help="" />
-        <dependencies>
-          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.7.2" />
-        </dependencies>
-      </framework-data>
+      <framework-data>
+  <options />
+  <configurations />
+  <files />
+  <documentation help="" />
+  <offline-documentation help="" />
+  <dependencies>
+    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.3.0" />
+  </dependencies>
+</framework-data>
     </AsfFrameworkConfig>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -708,10 +709,19 @@ location.sketchbook=c:\arduino-1.0.4windows\examples
     <Compile Include="GPS.ino">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="helper_3dmath.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="IMU.ino">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="LCD.ino">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="motorshield.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="motorshield.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="tinygps.h">
