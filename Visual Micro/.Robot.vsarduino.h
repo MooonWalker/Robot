@@ -23,8 +23,11 @@ void calibrateSensors();
 void motorInit();
 void motorsFwd(int speed);
 void motorsStop(bool brake);
+void initSonar();
+void doSonarping();
 
 #include "C:\Arduino\hardware\arduino\variants\standard\pins_arduino.h" 
 #include "C:\Arduino\hardware\arduino\cores\arduino\arduino.h"
 #include "C:\DATA\Dropbox\Robot\Robot.ino"
 #include "C:\DATA\Dropbox\Robot\Motor.ino"
+#include "C:\DATA\Dropbox\Robot\Sonar.ino"

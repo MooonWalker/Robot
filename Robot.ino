@@ -1,4 +1,8 @@
+#define LED_PIN 13
 #define SERVOPIN 12
+#define TRIG_PIN 4
+#define ECHO_PIN 11
+
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
 #include "Wire.h"
@@ -47,18 +51,14 @@ uint8_t i2cData[14]; // Buffer for I2C data
 const uint8_t IMUAddress = 0x68; // AD0 is logic low on the PCB
 const uint16_t I2C_TIMEOUT = 1000; // Used to check for errors in I2C communication
 
-
-#define LED_PIN 13
-int16_t HALF = 127;
+int16_t HALF = 130;
 int16_t FULL = 255;
 
 bool blinkState = false;
 
-
-
 void setup() 
 {
-
+	initSonar();
 	myservo.attach(SERVOPIN);
 	delay(2000);
 	myservo.write(0);
@@ -91,7 +91,6 @@ void setup()
 		 while(1);
 	}
  
-	 
     // configure Arduino LED for
     pinMode(LED_PIN, OUTPUT);
 	
@@ -178,6 +177,8 @@ void loop()
     digitalWrite(LED_PIN, blinkState);
 	
 	delay(500);
+	
+	doSonarping();
 }
 
 uint8_t i2cWrite(uint8_t registerAddress, uint8_t data, bool sendStop) {

@@ -183,6 +183,14 @@ build.board=AVR_ATMEGA328
 vm.boardsource.path=C:\Arduino\hardware\arduino
 vm.platformname.name=avr
 build.arch=AVR
+compiler.path=C:\Arduino\hardware\tools\avr\bin\
+includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"C:\Arduino\libraries\Wire\utility"
+build.path=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328
+build.project_name=Robot
+build.variant.path=C:\Arduino\hardware\arduino\variants\standard
+archive_file=core.a
+object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Servo\Servo.cpp.o
+source_file=C:\Arduino\libraries\Servo\Servo.cpp
 </arduino.board.property_bag>
         <arduino.build.mcu>atmega328p</arduino.build.mcu>
         <arduino.build.f_cpu>16000000L</arduino.build.f_cpu>
@@ -341,6 +349,14 @@ build.board=AVR_ATMEGA328
 vm.boardsource.path=C:\Arduino\hardware\arduino
 vm.platformname.name=avr
 build.arch=AVR
+compiler.path=C:\Arduino\hardware\tools\avr\bin\
+includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"C:\Arduino\libraries\Wire\utility"
+build.path=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328
+build.project_name=Robot
+build.variant.path=C:\Arduino\hardware\arduino\variants\standard
+archive_file=core.a
+object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Servo\Servo.cpp.o
+source_file=C:\Arduino\libraries\Servo\Servo.cpp
 </arduino.board.property_bag>
         <arduino.build.mcu>atmega328p</arduino.build.mcu>
         <arduino.build.f_cpu>16000000L</arduino.build.f_cpu>
@@ -360,6 +376,9 @@ build.arch=AVR
       <SubType>compile</SubType>
     </None>
     <None Include="Robot.ino">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="Sonar.ino">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>
