@@ -1,3 +1,4 @@
+#define SERVOPIN 12
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
 #include "Wire.h"
@@ -7,6 +8,7 @@
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include "Kalman.h"
+#include "Servo.h"
 
 // class default I2C address is 0x68
 // specific I2C addresses may be passed as a parameter here
@@ -15,6 +17,8 @@
 
 Kalman kalmanX; // Create the Kalman instances
 Kalman kalmanY;
+
+Servo myservo;
 
 MPU6050 accelgyro;
 
@@ -55,7 +59,13 @@ bool blinkState = false;
 void setup() 
 {
 
-	
+	myservo.attach(SERVOPIN);
+	delay(2000);
+	myservo.write(0);
+	delay(1000);
+	myservo.write(180);
+	delay(1000);
+	myservo.write(90);
     // join I2C bus (I2Cdev library doesn't do this automatically)
     
 
@@ -108,15 +118,12 @@ void setup()
 	
 	motorInit();
 	
-	
-		
-	
 }
 
 void loop() 
 {
 	
-	motorsFwd(HALF);
+	//motorsFwd(HALF);
 	
 	while(i2cRead(0x3B,i2cData,14)); //read mpu6050
 	accX = ((i2cData[0] << 8) | i2cData[1]);
