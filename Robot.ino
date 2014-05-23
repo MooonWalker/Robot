@@ -3,12 +3,14 @@
 #define TRIG_PIN 4
 #define ECHO_PIN 11
 
+#define  HALF 130
+#define  FULL 255
+
+#define BRAKE 1
+
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
 #include "Wire.h"
-
-// I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files
-// for both classes must be in the include path of your project
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include "Kalman.h"
@@ -21,6 +23,7 @@
 
 Kalman kalmanX; // Create the Kalman instances
 Kalman kalmanY;
+Kalman kalmanZ;
 
 Servo myservo;
 
@@ -40,24 +43,32 @@ int16_t accX, accY, accZ;
 int16_t tempRaw;
 int16_t gyroX, gyroY, gyroZ;
 
-double accXangle, accYangle; // Angle calculate using the accelerometer
+double accXangle, accYangle, accZangle; // Angle calculate using the accelerometer
 double temp; // Temperature
-double gyroXangle, gyroYangle; // Angle calculate using the gyro
-double compAngleX, compAngleY; // Calculate the angle using a complementary filter
-double kalAngleX, kalAngleY; // Calculate the angle using a Kalman filter
+double gyroXangle, gyroYangle, gyroZangle; // Angle calculate using the gyro
+double compAngleX, compAngleY, compAngleZ; // Calculate the angle using a complementary filter
+double kalAngleX, kalAngleY, kalAngleZ; // Calculate the angle using a Kalman filter
 
 uint32_t timer;
 uint8_t i2cData[14]; // Buffer for I2C data
 const uint8_t IMUAddress = 0x68; // AD0 is logic low on the PCB
 const uint16_t I2C_TIMEOUT = 1000; // Used to check for errors in I2C communication
 
-int16_t HALF = 130;
-int16_t FULL = 255;
+const int loopPeriod = 40;          // a period of 40ms = a frequency of 25Hz
+unsigned long timeLoopDelay = 0;
 
-bool blinkState = false;
+boolean blinkState = false;
+boolean moving = false;
+static boolean object = false;
+boolean start = false;
+
+enum STATE {STDBY, FWD, LOOKAROUND, TURNRIGHT, TURNLEFT, BACK};
+STATE currentState = STDBY;
+STATE prevState = STDBY;
 
 void setup() 
 {
+	
 	initSonar();
 	myservo.attach(SERVOPIN);
 	delay(2000);
@@ -67,12 +78,10 @@ void setup()
 	delay(1000);
 	myservo.write(90);
     // join I2C bus (I2Cdev library doesn't do this automatically)
-    
-
     // initialize serial communication
     // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
-    Serial.begin(19200);
+    Serial.begin(9600);
 	Wire.begin();
     // initialize device
     Serial.println("Initializing I2C devices...");
@@ -105,13 +114,19 @@ void setup()
 	 
 	 accYangle = (atan2(accX,accZ)+PI)*RAD_TO_DEG;
 	 accXangle = (atan2(accY,accZ)+PI)*RAD_TO_DEG;
+	 accZangle = (atan2(accY,accX)+PI)*RAD_TO_DEG;
 	 
 	kalmanX.setAngle(accXangle); // Set starting angle
 	kalmanY.setAngle(accYangle);
+	kalmanZ.setAngle(accZangle);
+	
 	gyroXangle = accXangle;
 	gyroYangle = accYangle;
+	gyroZangle = accZangle;
+	
 	compAngleX = accXangle;
 	compAngleY = accYangle;
+	compAngleZ = accZangle;
 	
 	timer = micros();
 	
@@ -121,8 +136,46 @@ void setup()
 
 void loop() 
 {
+	if(millis() - timeLoopDelay >= loopPeriod) //	25Hz loop
+	{
+		doSonarping(); // read and store the measured distances
+		
+		timeLoopDelay = millis();
+	}
 	
-	//motorsFwd(HALF);
+	switch(currentState)
+	{
+		case STDBY:					//initial state
+			Serial.println("STBY");
+			Serial.println(object);
+			
+			if(start) 
+				currentState = LOOKAROUND;
+		break;
+		
+		case FWD:
+			Serial.println("FWD");
+			if(object)
+				motorsStop(BRAKE);
+			currentState = LOOKAROUND;
+		break;
+		
+		case LOOKAROUND:
+			Serial.println("LOOKAROUND");
+		break;
+		
+		case TURNLEFT:
+			Serial.println("TURNLEFT");
+		break;
+		
+		case TURNRIGHT:
+			Serial.println("TURNRIGHT");
+		break;
+		
+		case BACK:
+			Serial.println("BACK");
+		break;		
+	}
 	
 	while(i2cRead(0x3B,i2cData,14)); //read mpu6050
 	accX = ((i2cData[0] << 8) | i2cData[1]);
@@ -135,28 +188,30 @@ void loop()
 	
 	accXangle = (atan2(accY,accZ)+PI)*RAD_TO_DEG;
 	accYangle = (atan2(accX,accZ)+PI)*RAD_TO_DEG;
+	accZangle = (atan2(accY,accX)+PI)*RAD_TO_DEG;
 	
 	 double gyroXrate = ((double)gyroX-base_x_gyro)/131.0;
 	 double gyroYrate = (-((double)gyroY-base_y_gyro)/131.0);
-	 
+	 double gyroZrate = ((double)gyroZ-base_z_gyro)/131.0;
 	
 	 gyroXangle += gyroXrate*((double)(micros()-timer)/1000000); // Calculate gyro angle without any filter
 	 gyroYangle += gyroYrate*((double)(micros()-timer)/1000000);
+	 gyroZangle += gyroZrate*((double)(micros()-timer)/1000000);
 	 
 	 //compAngleX = (0.93*(compAngleX+(gyroXrate*(double)(micros()-timer)/1000000)))+(0.07*accXangle); // Calculate the angle using a Complimentary filter
 	 //compAngleY = (0.93*(compAngleY+(gyroYrate*(double)(micros()-timer)/1000000)))+(0.07*accYangle);
    //
 	 kalAngleX = kalmanX.getAngle(accXangle, gyroXrate, (double)(micros()-timer)/1000000); // Calculate the angle using a Kalman filter
 	 kalAngleY = kalmanY.getAngle(accYangle, gyroYrate, (double)(micros()-timer)/1000000);
+	 kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate, (double)(micros()-timer)/1000000);
+	 
 	
 	timer = micros();
 	
 	//temp= accelgyro.getTemperature();
 	//temp= (temp+12412.0)/340.0;
 	temp = ((double)tempRaw + 12412.0) / 340.0;
-    // display tab-separated accel/gyro x/y/z values
-	
-	
+    // display tab-separated accel/gyro x/y/z values	
 	
     Serial.print("a/g/t:\t");
     //Serial.print(compAngleX); Serial.print("\t");
@@ -166,19 +221,19 @@ void loop()
 	//Serial.print(compAngleY); Serial.print("\t");
 	Serial.print(kalAngleY); Serial.print("\t");
 	Serial.print(accYangle); Serial.print("\t");
+	
+	Serial.print(kalAngleZ); Serial.print("\t");
+	Serial.print(gyroZangle); Serial.print("\t");
    
     //Serial.print(gyroX); Serial.print("\t");
     //Serial.print(gyroY); Serial.print("\t");
     
 	Serial.println(temp);
-
     // blink LED to indicate activity
     blinkState = !blinkState;
     digitalWrite(LED_PIN, blinkState);
 	
-	delay(500);
-	
-	doSonarping();
+	delay(50);
 }
 
 uint8_t i2cWrite(uint8_t registerAddress, uint8_t data, bool sendStop) {
@@ -269,5 +324,6 @@ void calibrateSensors()
 	base_z_gyro = z_gyro;
 	
 }
+
 
 

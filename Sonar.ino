@@ -23,13 +23,13 @@ void doSonarping()
 	{
 		
 	}
-	else if(distanceCm<=10 && distanceCm>=5)
+	else if(distanceCm<=50)
 	{
-		
+		object=true;
 	}
 	else
 	{
-		
+		object=false;
 	}
 
 	if (distanceCm <= 0)
