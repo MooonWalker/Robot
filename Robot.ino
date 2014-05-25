@@ -7,7 +7,7 @@
 #define  FULL 255
 
 #define BRAKE 1
-
+#define RED 0x1
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
 #include "Wire.h"
@@ -15,11 +15,9 @@
 #include "MPU6050.h"
 #include "Kalman.h"
 #include "Servo.h"
-
-// class default I2C address is 0x68
-// specific I2C addresses may be passed as a parameter here
-// AD0 low = 0x68 (default for InvenSense evaluation board)
-// AD0 high = 0x69
+#include "Adafruit_MCP23017.h"
+#include "Adafruit_RGBLCDShield.h"
+#include "Adafruit_INA219.h"
 
 Kalman kalmanX; // Create the Kalman instances
 Kalman kalmanY;
@@ -28,6 +26,8 @@ Kalman kalmanZ;
 Servo myservo;
 
 MPU6050 accelgyro;
+Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
+Adafruit_INA219 ina219; 
 
 float    base_x_accel;
 float    base_y_accel;
@@ -36,6 +36,7 @@ float    base_z_accel;
 float    base_x_gyro;
 float    base_y_gyro;
 float    base_z_gyro;
+float busvoltage = 0;
 
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
@@ -54,13 +55,17 @@ uint8_t i2cData[14]; // Buffer for I2C data
 const uint8_t IMUAddress = 0x68; // AD0 is logic low on the PCB
 const uint16_t I2C_TIMEOUT = 1000; // Used to check for errors in I2C communication
 
-const int loopPeriod = 40;          // a period of 40ms = a frequency of 25Hz
+const int loopPeriod = 100;          // a period of 40ms = a frequency of 25Hz
 unsigned long timeLoopDelay = 0;
+long duration, distanceCm;
 
 boolean blinkState = false;
 boolean moving = false;
 static boolean object = false;
 boolean start = false;
+
+volatile boolean isTriggered=false;
+uint8_t buttons;
 
 enum STATE {STDBY, FWD, LOOKAROUND, TURNRIGHT, TURNLEFT, BACK};
 STATE currentState = STDBY;
@@ -68,10 +73,17 @@ STATE prevState = STDBY;
 
 void setup() 
 {
-	
+	lcd.begin(16, 2);
+	ina219.begin();
+	//This signal is active low, so HIGH-to-LOW when interrupt
+	lcd.enableButtonInterrupt();
+
+	lcd.setBacklight(RED);	
+	lcd.setCursor(0, 0);
+	lcd.print("Initsonar...");
 	initSonar();
 	myservo.attach(SERVOPIN);
-	delay(2000);
+	delay(1000);
 	myservo.write(0);
 	delay(1000);
 	myservo.write(180);
@@ -81,13 +93,13 @@ void setup()
     // initialize serial communication
     // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
-    Serial.begin(9600);
+    Serial.begin(115200);
 	Wire.begin();
     // initialize device
     Serial.println("Initializing I2C devices...");
     accelgyro.initialize();
-	 i2cData[0] = 7; // Set the sample rate to 1000Hz - 8kHz/(7+1) = 1000Hz
-	 i2cData[1] = 0x00; // Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro filtering, 8 KHz sampling
+	i2cData[0] = 7; // Set the sample rate to 1000Hz - 8kHz/(7+1) = 1000Hz
+	i2cData[1] = 0x00; // Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro filtering, 8 KHz sampling
 	i2cData[2] = 0x00; // Set Gyro Full Scale Range to ±250deg/s
 	i2cData[3] = 0x00; // Set Accelerometer Full Scale Range to ±2g
 	while(i2cWrite(0x19,i2cData,4,false)); // Write to all four registers at once
@@ -100,11 +112,12 @@ void setup()
 		 while(1);
 	}
  
-    // configure Arduino LED for
+    // configure Arduino LED
     pinMode(LED_PIN, OUTPUT);
 	
-	delay(100);
-	
+	lcd.clear();
+	lcd.setCursor(0,0);
+	lcd.print("Calibrate sensors...");
 	calibrateSensors();
 	
 	 while(i2cRead(0x3B,i2cData,6));
@@ -130,27 +143,76 @@ void setup()
 	
 	timer = micros();
 	
+	lcd.clear();
+	lcd.setCursor(0,0);
+	lcd.print("Motorinit...");
 	motorInit();
-	
+	delay(500);
+	lcd.clear();
+	attachInterrupt(1,ISR_Button,FALLING);
 }
 
 void loop() 
-{
-	if(millis() - timeLoopDelay >= loopPeriod) //	25Hz loop
-	{
-		doSonarping(); // read and store the measured distances
-		
-		timeLoopDelay = millis();
-	}
-	
+{	
+	  
 	switch(currentState)
 	{
-		case STDBY:					//initial state
-			Serial.println("STBY");
-			Serial.println(object);
+		case STDBY:					//initial state		
+			myservo.detach();
 			
-			if(start) 
+			if(millis() - timeLoopDelay >= loopPeriod) //	25Hz loop
+			{
+				doSonarping(); // read and store the measured distances
+				
+				busvoltage = ina219.getBusVoltage_V();
+				timeLoopDelay = millis();
+			}
+					
+			if (isTriggered)
+			{	Serial.println("triggered");
+				handleKeypress();
+				if (buttons)
+				{
+					//lcd.clear();
+					lcd.setCursor(0,1);
+					if (buttons & BUTTON_UP)
+					{
+						lcd.print("UP        ");
+						
+					}
+					if (buttons & BUTTON_DOWN)
+					{
+						lcd.print("DOWN      ");
+						//lcd.setBacklight(YELLOW);
+					}
+					if (buttons & BUTTON_LEFT)
+					{
+						lcd.print("LEFT      ");
+						//lcd.setBacklight(GREEN);
+					}
+					if (buttons & BUTTON_RIGHT)
+					{
+						lcd.print("RIGHT ");
+						//lcd.setBacklight(TEAL);
+					}
+					if (buttons & BUTTON_SELECT)
+					{
+						lcd.print("SELECT    ");
+						//lcd.setBacklight(VIOLET);
+					}
+					delay(1000);
+				}			
+			}
+			else
+			{
+				lcdPrintsSTBY();
+			}
+			
+			if(start)
+			{
+				readIMU(); 
 				currentState = LOOKAROUND;
+			}
 		break;
 		
 		case FWD:
@@ -177,63 +239,11 @@ void loop()
 		break;		
 	}
 	
-	while(i2cRead(0x3B,i2cData,14)); //read mpu6050
-	accX = ((i2cData[0] << 8) | i2cData[1]);
-	accY = ((i2cData[2] << 8) | i2cData[3]);
-	accZ = ((i2cData[4] << 8) | i2cData[5]);
-	tempRaw = ((i2cData[6] << 8) | i2cData[7]);
-	gyroX = ((i2cData[8] << 8) | i2cData[9]);
-	gyroY = ((i2cData[10] << 8) | i2cData[11]);
-	gyroZ = ((i2cData[12] << 8) | i2cData[13]);
 	
-	accXangle = (atan2(accY,accZ)+PI)*RAD_TO_DEG;
-	accYangle = (atan2(accX,accZ)+PI)*RAD_TO_DEG;
-	accZangle = (atan2(accY,accX)+PI)*RAD_TO_DEG;
-	
-	 double gyroXrate = ((double)gyroX-base_x_gyro)/131.0;
-	 double gyroYrate = (-((double)gyroY-base_y_gyro)/131.0);
-	 double gyroZrate = ((double)gyroZ-base_z_gyro)/131.0;
-	
-	 gyroXangle += gyroXrate*((double)(micros()-timer)/1000000); // Calculate gyro angle without any filter
-	 gyroYangle += gyroYrate*((double)(micros()-timer)/1000000);
-	 gyroZangle += gyroZrate*((double)(micros()-timer)/1000000);
-	 
-	 //compAngleX = (0.93*(compAngleX+(gyroXrate*(double)(micros()-timer)/1000000)))+(0.07*accXangle); // Calculate the angle using a Complimentary filter
-	 //compAngleY = (0.93*(compAngleY+(gyroYrate*(double)(micros()-timer)/1000000)))+(0.07*accYangle);
-   //
-	 kalAngleX = kalmanX.getAngle(accXangle, gyroXrate, (double)(micros()-timer)/1000000); // Calculate the angle using a Kalman filter
-	 kalAngleY = kalmanY.getAngle(accYangle, gyroYrate, (double)(micros()-timer)/1000000);
-	 kalAngleZ = kalmanZ.getAngle(accZangle, gyroZrate, (double)(micros()-timer)/1000000);
-	 
-	
-	timer = micros();
-	
-	//temp= accelgyro.getTemperature();
-	//temp= (temp+12412.0)/340.0;
-	temp = ((double)tempRaw + 12412.0) / 340.0;
-    // display tab-separated accel/gyro x/y/z values	
-	
-    Serial.print("a/g/t:\t");
-    //Serial.print(compAngleX); Serial.print("\t");
-	 Serial.print(kalAngleX); Serial.print("\t");
-    Serial.print(accXangle); Serial.print("\t");
-	
-	//Serial.print(compAngleY); Serial.print("\t");
-	Serial.print(kalAngleY); Serial.print("\t");
-	Serial.print(accYangle); Serial.print("\t");
-	
-	Serial.print(kalAngleZ); Serial.print("\t");
-	Serial.print(gyroZangle); Serial.print("\t");
-   
-    //Serial.print(gyroX); Serial.print("\t");
-    //Serial.print(gyroY); Serial.print("\t");
-    
-	Serial.println(temp);
     // blink LED to indicate activity
     blinkState = !blinkState;
     digitalWrite(LED_PIN, blinkState);
 	
-	delay(50);
 }
 
 uint8_t i2cWrite(uint8_t registerAddress, uint8_t data, bool sendStop) {
@@ -269,61 +279,15 @@ uint8_t i2cRead(uint8_t registerAddress, uint8_t* data, uint8_t nbytes) {
 	return 0; // Success
 }
 
-void calibrateSensors()
+void ISR_Button()
 {
-	int                   num_readings = 50;
-	float                 x_accel = 0;
-	float                 y_accel = 0;
-	float                 z_accel = 0;
-	float                 x_gyro = 0;
-	float                 y_gyro = 0;
-	float                 z_gyro = 0;	
 	
-	while(i2cRead(0x3B,i2cData,14));
-	x_accel = ((i2cData[0] << 8) | i2cData[1]);
-	y_accel = ((i2cData[2] << 8) | i2cData[3]);
-	z_accel = ((i2cData[4] << 8) | i2cData[5]);
-	tempRaw = ((i2cData[6] << 8) | i2cData[7]);
-	x_gyro = ((i2cData[8] << 8) | i2cData[9]);
-	y_gyro = ((i2cData[10] << 8) | i2cData[11]);
-	z_gyro = ((i2cData[12] << 8) | i2cData[13]);
-	
-	x_accel = 0;
-	y_accel = 0;
-	z_accel = 0;
-	x_gyro = 0;
-	y_gyro = 0;
-	z_gyro = 0;
-	
-	for(int i=0;i < num_readings;i++) //calibrating
-	{
-		while(i2cRead(0x3B,i2cData,14));
-		x_accel += ((i2cData[0] << 8) | i2cData[1]);
-		y_accel += ((i2cData[2] << 8) | i2cData[3]);
-		z_accel += ((i2cData[4] << 8) | i2cData[5]);
-		tempRaw += ((i2cData[6] << 8) | i2cData[7]);
-		x_gyro += ((i2cData[8] << 8) | i2cData[9]);
-		y_gyro += ((i2cData[10] << 8) | i2cData[11]);
-		z_gyro += ((i2cData[12] << 8) | i2cData[13]);
-		
-		delay(100);
-	}
-	
-	x_accel /= num_readings;
-	y_accel /= num_readings;
-	z_accel /= num_readings;
-	x_gyro /= num_readings;
-	y_gyro /= num_readings;
-	z_gyro /= num_readings;
-	
-	base_x_accel = x_accel;
-	base_y_accel = y_accel;
-	base_z_accel = z_accel;
-	base_x_gyro = x_gyro;
-	base_y_gyro = y_gyro;
-	base_z_gyro = z_gyro;
+	isTriggered = true; //Also flag we triggered
 	
 }
 
-
-
+void handleKeypress()
+{
+	isTriggered=false;
+	buttons = lcd.readButtons();
+}

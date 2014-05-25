@@ -7,7 +7,7 @@ void initSonar()
 
 void doSonarping()
 {
-	long duration, distanceCm;
+	
 	// Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
 	digitalWrite(TRIG_PIN, LOW);
 	delayMicroseconds(2);
@@ -23,7 +23,7 @@ void doSonarping()
 	{
 		
 	}
-	else if(distanceCm<=50)
+	else if(distanceCm<=40)
 	{
 		object=true;
 	}
