@@ -19,7 +19,7 @@ void lcdPrintsSTBY()
 void lcdPrintsLook()
 {
 	lcd.setCursor(0, 0);
-	lcd.print("LOOKING");
+	lcd.print("LOOK");
 	lcd.print("O: ");
 	lcd.print(distanceCm, DEC);
 	lcd.print("cm");

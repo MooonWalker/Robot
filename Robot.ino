@@ -76,8 +76,32 @@ enum STATE {STDBY, FWD, LOOKAROUND, TURNRIGHT, TURNLEFT, BACK};
 STATE actualState = STDBY;
 STATE prevState = STDBY;
 
+struct angledPing 
+{	int angle;
+	long distance;
+};
+
+
 void setup() 
 {
+	struct angledPing ping_0;
+	ping_0.angle=0;
+	ping_0.distance=0;
+	struct angledPing ping_30;
+	ping_30.angle=30;
+	ping_30.distance=0;
+	struct angledPing ping_90;
+	ping_90.angle=90;
+	ping_90.distance=0;
+	struct angledPing ping_150;
+	ping_150.angle=150;
+	ping_150.distance=0;
+	struct angledPing ping_180;
+	ping_180.angle=180;
+	ping_180.distance=0;
+	angledPing angledPings[50];
+	
+	//--------------------------------
 	lcd.begin(16, 2);
 	ina219.begin();
 	//This signal is active low, so HIGH-to-LOW when interrupt
@@ -224,15 +248,21 @@ void loop()
 			
 			myservo.attach(SERVOPIN);
 			myservo.write(0);
-			delay(1000);
+			singlePing();
+			delay(500);
 			myservo.write(30);
-			delay(1000);
+			singlePing();
+			delay(500);			
 			myservo.write(180);
-			delay(1000);
+			singlePing();
+			delay(500);
 			myservo.write(150);
-			delay(1000);
+			singlePing();
+			delay(500);
 			myservo.write(90);
-			delay(1000);
+			object=singlePing();
+			delay(500);
+			
 			lcdPrintsLook();
 			
 			//--> turn to freeway and continue traveling
