@@ -27,8 +27,10 @@ void motorInit();
 void motorsFwd(int speed);
 void motorsStop(bool brake);
 void lcdPrintsSTBY();
+void lcdPrintsLook();
 void initSonar();
-void doSonarping();
+boolean doSonarping();
+boolean singlePing();
 
 #include "C:\Arduino\hardware\arduino\variants\standard\pins_arduino.h" 
 #include "C:\Arduino\hardware\arduino\cores\arduino\arduino.h"

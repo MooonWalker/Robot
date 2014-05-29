@@ -67,6 +67,8 @@
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>
@@ -110,6 +112,8 @@
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>
@@ -241,6 +245,8 @@ source_file=C:\Arduino\libraries\Servo\Servo.cpp
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>
@@ -284,6 +290,8 @@ source_file=C:\Arduino\libraries\Servo\Servo.cpp
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>

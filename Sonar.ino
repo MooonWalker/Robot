@@ -5,42 +5,69 @@ void initSonar()
 	pinMode(ECHO_PIN, INPUT);	
 }
 
-void doSonarping()
+boolean doSonarping()
 {
+		duration = sonar.ping();  // Send ping, get ping time in microseconds (uS). 		
+		distanceCm = duration / US_ROUNDTRIP_CM; // convert the time into a distance	
 	
-	// Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
-	digitalWrite(TRIG_PIN, LOW);
-	delayMicroseconds(2);
-	digitalWrite(TRIG_PIN, HIGH);
-	delayMicroseconds(10);
-	digitalWrite(TRIG_PIN, LOW);
-	duration = pulseIn(ECHO_PIN,HIGH);
-
-	// convert the time into a distance
-	distanceCm = duration / 29.1 / 2 ;
-
+	
 	if(distanceCm <=5)
 	{
 		
 	}
 	else if(distanceCm<=40)
 	{
-		object=true;
+		return true;
 	}
 	else
 	{
-		object=false;
+		return false;
 	}
 
 	if (distanceCm <= 0)
 	{
-		Serial.println("Out of range");
+		//out of range
 	}
 	else
 	{
-		Serial.print(distanceCm);
-		Serial.print("cm");
-		Serial.println();
+		
+	}
+
+}
+
+boolean singlePing()
+{
+	long sumOfDistances=0;
+	for (int i=0; i < numberOfPings; i++)
+	{
+		duration = sonar.ping();  // Send ping, get ping time in microseconds (uS).
+		distanceCm = duration / US_ROUNDTRIP_CM; // convert the time into a distance
+		sumOfDistances += distanceCm;
+		delay(35);
+	}
+	
+	avgDistance=sumOfDistances/numberOfPings;
+	
+	if(avgDistance <=5)
+	{
+		
+	}
+	else if(avgDistance<=40)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	if (avgDistance <= 0)
+	{
+		//out of range
+	}
+	else
+	{
+		
 	}
 
 }

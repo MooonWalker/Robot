@@ -2,14 +2,15 @@
 #define SERVOPIN 12
 #define TRIG_PIN 4
 #define ECHO_PIN 11
+#define MAX_DISTANCE 200 //Max distance to ping in cm
 
-#define  HALF 130
-#define  FULL 255
+#define  HALF 133  //motor speed slow
+#define  FULL 255  //motor speed full
 
-#define BRAKE 1
+#define BRAKE 1		//motors brake
+#define NOBRAKE 0	//motors free run
 #define RED 0x1
-// Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
-// is used in I2Cdev.h
+
 #include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU6050.h"
@@ -18,13 +19,14 @@
 #include "Adafruit_MCP23017.h"
 #include "Adafruit_RGBLCDShield.h"
 #include "Adafruit_INA219.h"
+#include "NewPing.h"
 
 Kalman kalmanX; // Create the Kalman instances
 Kalman kalmanY;
 Kalman kalmanZ;
 
 Servo myservo;
-
+NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 MPU6050 accelgyro;
 Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 Adafruit_INA219 ina219; 
@@ -55,9 +57,12 @@ uint8_t i2cData[14]; // Buffer for I2C data
 const uint8_t IMUAddress = 0x68; // AD0 is logic low on the PCB
 const uint16_t I2C_TIMEOUT = 1000; // Used to check for errors in I2C communication
 
-const int loopPeriod = 100;          // a period of 40ms = a frequency of 25Hz
-unsigned long timeLoopDelay = 0;
-long duration, distanceCm;
+const int loopPeriod = 55;          // a period of 55ms = a frequency of 25Hz
+const int slowPeriod = 2000;		// 2sec
+unsigned long timeLoopDelay = 0, slowLoopDelay=0;
+
+long duration, distanceCm, avgDistance, runningAverage=0;
+const int  numberOfPings=10;
 
 boolean blinkState = false;
 boolean moving = false;
@@ -68,7 +73,7 @@ volatile boolean isTriggered=false;
 uint8_t buttons;
 
 enum STATE {STDBY, FWD, LOOKAROUND, TURNRIGHT, TURNLEFT, BACK};
-STATE currentState = STDBY;
+STATE actualState = STDBY;
 STATE prevState = STDBY;
 
 void setup() 
@@ -82,13 +87,7 @@ void setup()
 	lcd.setCursor(0, 0);
 	lcd.print("Initsonar...");
 	initSonar();
-	myservo.attach(SERVOPIN);
-	delay(1000);
-	myservo.write(0);
-	delay(1000);
-	myservo.write(180);
-	delay(1000);
-	myservo.write(90);
+	
     // join I2C bus (I2Cdev library doesn't do this automatically)
     // initialize serial communication
     // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
@@ -147,6 +146,14 @@ void setup()
 	lcd.setCursor(0,0);
 	lcd.print("Motorinit...");
 	motorInit();
+	
+	myservo.attach(SERVOPIN);
+	delay(1000);
+	myservo.write(0);
+	delay(1000);
+	myservo.write(180);
+	delay(1000);
+	myservo.write(90);
 	delay(500);
 	lcd.clear();
 	attachInterrupt(1,ISR_Button,FALLING);
@@ -155,54 +162,49 @@ void setup()
 void loop() 
 {	
 	  
-	switch(currentState)
+	  
+	switch(actualState)	//state machine
 	{
 		case STDBY:					//initial state		
-			myservo.detach();
-			
-			if(millis() - timeLoopDelay >= loopPeriod) //	25Hz loop
+			myservo.detach();	
+			if(millis() - slowLoopDelay >= slowPeriod) //	.5Hz loop for pinging
 			{
-				doSonarping(); // read and store the measured distances
-				
+				object=singlePing();				
 				busvoltage = ina219.getBusVoltage_V();
-				timeLoopDelay = millis();
-			}
-					
-			if (isTriggered)
-			{	Serial.println("triggered");
+				slowLoopDelay = millis();
+			}	
+			
+			if (isTriggered) //button interrupt1 fired
+			{	
 				handleKeypress();
 				if (buttons)
 				{
-					//lcd.clear();
 					lcd.setCursor(0,1);
 					if (buttons & BUTTON_UP)
 					{
-						lcd.print("UP        ");
-						
+						lcd.print("UP        ");						
 					}
 					if (buttons & BUTTON_DOWN)
 					{
 						lcd.print("DOWN      ");
-						//lcd.setBacklight(YELLOW);
 					}
 					if (buttons & BUTTON_LEFT)
 					{
 						lcd.print("LEFT      ");
-						//lcd.setBacklight(GREEN);
 					}
 					if (buttons & BUTTON_RIGHT)
 					{
 						lcd.print("RIGHT ");
-						//lcd.setBacklight(TEAL);
 					}
-					if (buttons & BUTTON_SELECT)
+					if (buttons & BUTTON_SELECT)  //start the journey
 					{
-						lcd.print("SELECT    ");
-						//lcd.setBacklight(VIOLET);
+						lcd.print("START    ");
+						start=true;
+						//motorsFwd(HALF);
 					}
-					delay(1000);
-				}			
-			}
+					delay(100);
+				}		//if (buttons)	
+			}		//if (isTriggered)
 			else
 			{
 				lcdPrintsSTBY();
@@ -211,27 +213,60 @@ void loop()
 			if(start)
 			{
 				readIMU(); 
-				currentState = LOOKAROUND;
+				actualState = LOOKAROUND;
+				lcd.clear();
 			}
-		break;
-		
-		case FWD:
-			Serial.println("FWD");
-			if(object)
-				motorsStop(BRAKE);
-			currentState = LOOKAROUND;
 		break;
 		
 		case LOOKAROUND:
 			Serial.println("LOOKAROUND");
+			readIMU();
+			
+			myservo.attach(SERVOPIN);
+			myservo.write(0);
+			delay(1000);
+			myservo.write(30);
+			delay(1000);
+			myservo.write(180);
+			delay(1000);
+			myservo.write(150);
+			delay(1000);
+			myservo.write(90);
+			delay(1000);
+			lcdPrintsLook();
+			
+			//--> turn to freeway and continue traveling
+			if (!object && start)
+			{
+				actualState=FWD;			
+			}
+		break;
+		
+		case FWD:
+			if(millis() - timeLoopDelay >= loopPeriod) //	25Hz loop for pinging
+			{
+				object=doSonarping(); // read the measured distances
+				busvoltage = ina219.getBusVoltage_V();
+				timeLoopDelay = millis();
+			}
+			Serial.println("FWD");
+			motorsFwd(HALF);
+			if(object) 
+			{
+				motorsStop(BRAKE);
+				actualState = LOOKAROUND;
+			}
+			start=false;
 		break;
 		
 		case TURNLEFT:
 			Serial.println("TURNLEFT");
+			//-->FWD
 		break;
 		
 		case TURNRIGHT:
 			Serial.println("TURNRIGHT");
+			//-->FWD
 		break;
 		
 		case BACK:
