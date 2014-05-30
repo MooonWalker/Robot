@@ -35,8 +35,9 @@ boolean doSonarping()
 
 }
 
-boolean singlePing()
+boolean singlePing(int angle, aping *apn)
 {
+	
 	long sumOfDistances=0;
 	for (int i=0; i < numberOfPings; i++)
 	{
@@ -44,10 +45,39 @@ boolean singlePing()
 		distanceCm = duration / US_ROUNDTRIP_CM; // convert the time into a distance
 		sumOfDistances += distanceCm;
 		delay(35);
-	}
-	
+	}	
 	avgDistance=sumOfDistances/numberOfPings;
 	
+	switch (angle)
+	{
+		case 0:
+			apn[0].a=angle;
+			apn[0].dist=avgDistance;
+		break;
+		
+		case 30:
+			apn[1].a=angle;
+			apn[1].dist=avgDistance;
+		break;
+
+		case 90:
+			apn[2].a=angle;
+			apn[2].dist=avgDistance;
+		break;
+
+		case 150:
+			apn[3].a=angle;
+			apn[3].dist=avgDistance;
+		break;
+
+		case 180:
+			apn[4].a=angle;
+			apn[4].dist=avgDistance;
+		break;
+	}
+
+	
+		
 	if(avgDistance <=5)
 	{
 		
@@ -70,4 +100,9 @@ boolean singlePing()
 		
 	}
 
+}
+
+char whereToTurn(aping *apg)
+{
+	return 0;
 }

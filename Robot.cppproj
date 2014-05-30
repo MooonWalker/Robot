@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>6.1</ProjectVersion>
+    <ProjectVersion>6.2</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
     <ProjectGuid>{07b459b4-8d76-4638-bc6d-a459ba2d616b}</ProjectGuid>
     <avrdevice>atmega328p</avrdevice>
@@ -34,7 +34,7 @@
         <documentation help="" />
         <offline-documentation help="" />
         <dependencies>
-          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.3.0" />
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.6.0" />
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
@@ -49,6 +49,17 @@
         <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
         <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>__AVR_ATmega328p__</Value>
+            <Value>__AVR_ATmega328P__</Value>
+            <Value>ARDUINO=101</Value>
+            <Value>ARDUINO_MAIN</Value>
+            <Value>F_CPU=16000000L</Value>
+            <Value>__AVR__</Value>
+            <Value>__cplusplus</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.directories.IncludePaths>
           <ListValues>
             <Value>C:\Arduino\hardware\arduino\cores\arduino</Value>
@@ -63,12 +74,16 @@
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
             <Value>C:\Arduino\libraries\Servo\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>C:\Arduino\libraries</Value>
+            <Value>C:\Arduino\hardware\arduino\libraries</Value>
+            <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>
@@ -108,12 +123,16 @@
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
             <Value>C:\Arduino\libraries\Servo\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>C:\Arduino\libraries</Value>
+            <Value>C:\Arduino\hardware\arduino\libraries</Value>
+            <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>
@@ -130,17 +149,6 @@
         <avrgcccpp.compiler.miscellaneous.OtherFlags>-include=arduino.h</avrgcccpp.compiler.miscellaneous.OtherFlags>
         <avrgcccpp.linker.memorysettings.Comment>&lt;segmentname&gt;=&lt;address&gt;, for example  .boot=0xff</avrgcccpp.linker.memorysettings.Comment>
         <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
-        <avrgcc.compiler.symbols.DefSymbols>
-          <ListValues>
-            <Value>__AVR_ATmega328p__</Value>
-            <Value>__AVR_ATmega328P__</Value>
-            <Value>ARDUINO=101</Value>
-            <Value>ARDUINO_MAIN</Value>
-            <Value>F_CPU=16000000L</Value>
-            <Value>__AVR__</Value>
-            <Value>__cplusplus</Value>
-          </ListValues>
-        </avrgcc.compiler.symbols.DefSymbols>
       </AvrGccCpp>
     </ToolchainSettings>
     <VisualMicroSettings>
@@ -196,13 +204,16 @@ vm.boardsource.path=C:\Arduino\hardware\arduino
 vm.platformname.name=avr
 build.arch=AVR
 compiler.path=C:\Arduino\hardware\tools\avr\bin\
-includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"C:\Arduino\libraries\Wire\utility"
+includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219"  -I"c:\DATA\Dropbox\arduino\libraries\NewPing"  -I"C:\Arduino\libraries\Wire\utility"
 build.path=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328
 build.project_name=Robot
 build.variant.path=C:\Arduino\hardware\arduino\variants\standard
 archive_file=core.a
-object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Servo\Servo.cpp.o
-source_file=C:\Arduino\libraries\Servo\Servo.cpp
+object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\NewPing\NewPing.cpp.o
+source_file=c:\DATA\Dropbox\arduino\libraries\NewPing\NewPing.cpp
+build.architecture=avr
+vmresolved.compiler.path=C:\Arduino\hardware\tools\avr\bin\
+vmresolved.tools.path=C:\Arduino\hardware\tools\avr
 </arduino.board.property_bag>
         <arduino.build.mcu>atmega328p</arduino.build.mcu>
         <arduino.build.f_cpu>16000000L</arduino.build.f_cpu>
@@ -227,6 +238,17 @@ source_file=C:\Arduino\libraries\Servo\Servo.cpp
         <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
         <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>__AVR_ATmega328p__</Value>
+            <Value>__AVR_ATmega328P__</Value>
+            <Value>ARDUINO=101</Value>
+            <Value>ARDUINO_MAIN</Value>
+            <Value>F_CPU=16000000L</Value>
+            <Value>__AVR__</Value>
+            <Value>__cplusplus</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.directories.IncludePaths>
           <ListValues>
             <Value>C:\Arduino\hardware\arduino\cores\arduino</Value>
@@ -241,12 +263,16 @@ source_file=C:\Arduino\libraries\Servo\Servo.cpp
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
             <Value>C:\Arduino\libraries\Servo\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>C:\Arduino\libraries</Value>
+            <Value>C:\Arduino\hardware\arduino\libraries</Value>
+            <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>
@@ -286,12 +312,16 @@ source_file=C:\Arduino\libraries\Servo\Servo.cpp
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
             <Value>C:\Arduino\libraries\Servo\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>C:\Arduino\libraries</Value>
+            <Value>C:\Arduino\hardware\arduino\libraries</Value>
+            <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\include\avr\</Value>
             <Value>c:\arduino\hardware\tools\avr\avr\</Value>
@@ -308,17 +338,6 @@ source_file=C:\Arduino\libraries\Servo\Servo.cpp
         <avrgcccpp.compiler.miscellaneous.OtherFlags>-include=arduino.h</avrgcccpp.compiler.miscellaneous.OtherFlags>
         <avrgcccpp.linker.memorysettings.Comment>&lt;segmentname&gt;=&lt;address&gt;, for example  .boot=0xff</avrgcccpp.linker.memorysettings.Comment>
         <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
-        <avrgcc.compiler.symbols.DefSymbols>
-          <ListValues>
-            <Value>__AVR_ATmega328p__</Value>
-            <Value>__AVR_ATmega328P__</Value>
-            <Value>ARDUINO=101</Value>
-            <Value>ARDUINO_MAIN</Value>
-            <Value>F_CPU=16000000L</Value>
-            <Value>__AVR__</Value>
-            <Value>__cplusplus</Value>
-          </ListValues>
-        </avrgcc.compiler.symbols.DefSymbols>
       </AvrGccCpp>
     </ToolchainSettings>
     <VisualMicroSettings>
@@ -374,13 +393,16 @@ vm.boardsource.path=C:\Arduino\hardware\arduino
 vm.platformname.name=avr
 build.arch=AVR
 compiler.path=C:\Arduino\hardware\tools\avr\bin\
-includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"C:\Arduino\libraries\Wire\utility"
+includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219"  -I"c:\DATA\Dropbox\arduino\libraries\NewPing"  -I"C:\Arduino\libraries\Wire\utility"
 build.path=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328
 build.project_name=Robot
 build.variant.path=C:\Arduino\hardware\arduino\variants\standard
 archive_file=core.a
-object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Servo\Servo.cpp.o
-source_file=C:\Arduino\libraries\Servo\Servo.cpp
+object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\NewPing\NewPing.cpp.o
+source_file=c:\DATA\Dropbox\arduino\libraries\NewPing\NewPing.cpp
+build.architecture=avr
+vmresolved.compiler.path=C:\Arduino\hardware\tools\avr\bin\
+vmresolved.tools.path=C:\Arduino\hardware\tools\avr
 </arduino.board.property_bag>
         <arduino.build.mcu>atmega328p</arduino.build.mcu>
         <arduino.build.f_cpu>16000000L</arduino.build.f_cpu>
@@ -416,6 +438,9 @@ source_file=C:\Arduino\libraries\Servo\Servo.cpp
     <Folder Include="Visual Micro\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IncFile1.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Visual Micro\.Robot.vsarduino.h">
       <SubType>compile</SubType>
     </Compile>

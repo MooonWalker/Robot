@@ -20,6 +20,7 @@
 #include "Adafruit_RGBLCDShield.h"
 #include "Adafruit_INA219.h"
 #include "NewPing.h"
+#include "IncFile1.h"
 
 Kalman kalmanX; // Create the Kalman instances
 Kalman kalmanY;
@@ -68,6 +69,7 @@ boolean blinkState = false;
 boolean moving = false;
 static boolean object = false;
 boolean start = false;
+char direction =0;		//where to turn after lookaround
 
 volatile boolean isTriggered=false;
 uint8_t buttons;
@@ -76,31 +78,11 @@ enum STATE {STDBY, FWD, LOOKAROUND, TURNRIGHT, TURNLEFT, BACK};
 STATE actualState = STDBY;
 STATE prevState = STDBY;
 
-struct angledPing 
-{	int angle;
-	long distance;
-};
-
+aping angularPings[10];
+boolean singlePing(int angle, aping *aPs);
 
 void setup() 
 {
-	struct angledPing ping_0;
-	ping_0.angle=0;
-	ping_0.distance=0;
-	struct angledPing ping_30;
-	ping_30.angle=30;
-	ping_30.distance=0;
-	struct angledPing ping_90;
-	ping_90.angle=90;
-	ping_90.distance=0;
-	struct angledPing ping_150;
-	ping_150.angle=150;
-	ping_150.distance=0;
-	struct angledPing ping_180;
-	ping_180.angle=180;
-	ping_180.distance=0;
-	angledPing angledPings[50];
-	
 	//--------------------------------
 	lcd.begin(16, 2);
 	ina219.begin();
@@ -123,8 +105,8 @@ void setup()
     accelgyro.initialize();
 	i2cData[0] = 7; // Set the sample rate to 1000Hz - 8kHz/(7+1) = 1000Hz
 	i2cData[1] = 0x00; // Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro filtering, 8 KHz sampling
-	i2cData[2] = 0x00; // Set Gyro Full Scale Range to ±250deg/s
-	i2cData[3] = 0x00; // Set Accelerometer Full Scale Range to ±2g
+	i2cData[2] = 0x00; // Set Gyro Full Scale Range to ï¿½250deg/s
+	i2cData[3] = 0x00; // Set Accelerometer Full Scale Range to ï¿½2g
 	while(i2cWrite(0x19,i2cData,4,false)); // Write to all four registers at once
 	while(i2cWrite(0x6B,0x01,true)); // PLL with X axis gyroscope reference and disable sleep mode 
 	while(i2cRead(0x75,i2cData,1));
@@ -184,16 +166,14 @@ void setup()
 }
 
 void loop() 
-{	
-	  
-	  
+{	  
 	switch(actualState)	//state machine
 	{
 		case STDBY:					//initial state		
 			myservo.detach();	
 			if(millis() - slowLoopDelay >= slowPeriod) //	.5Hz loop for pinging
 			{
-				object=singlePing();				
+				object=singlePing(90, angularPings);				
 				busvoltage = ina219.getBusVoltage_V();
 				slowLoopDelay = millis();
 			}	
@@ -224,7 +204,9 @@ void loop()
 					{
 						lcd.print("START    ");
 						start=true;
-						//motorsFwd(HALF);
+						readIMU();
+						actualState = LOOKAROUND;  //next state
+						lcd.clear();
 					}
 					delay(100);
 				}		//if (buttons)	
@@ -232,14 +214,7 @@ void loop()
 			else
 			{
 				lcdPrintsSTBY();
-			}
-			
-			if(start)
-			{
-				readIMU(); 
-				actualState = LOOKAROUND;
-				lcd.clear();
-			}
+			}		
 		break;
 		
 		case LOOKAROUND:
@@ -248,27 +223,37 @@ void loop()
 			
 			myservo.attach(SERVOPIN);
 			myservo.write(0);
-			singlePing();
+			singlePing(0,angularPings);
 			delay(500);
 			myservo.write(30);
-			singlePing();
+			singlePing(30,angularPings);
 			delay(500);			
 			myservo.write(180);
-			singlePing();
+			singlePing(180, angularPings);
 			delay(500);
 			myservo.write(150);
-			singlePing();
+			singlePing(150, angularPings);
 			delay(500);
 			myservo.write(90);
-			object=singlePing();
+			object=singlePing(90, angularPings);
 			delay(500);
 			
 			lcdPrintsLook();
+
+			direction=whereToTurn(angularPings);
 			
-			//--> turn to freeway and continue traveling
-			if (!object && start)
+			//--> turn to freeway and continue traveling			
+			if (direction==90)
 			{
-				actualState=FWD;			
+				actualState=FWD;
+			} 
+			else if (direction<90)
+			{
+				actualState=TURNRIGHT;
+			}
+			else
+			{
+				actualState=TURNLEFT;
 			}
 		break;
 		
