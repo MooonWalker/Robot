@@ -55,7 +55,7 @@ boolean singlePing(int angle, aping *apn)
 			apn[0].dist=avgDistance;
 		break;
 		
-		case 30:
+		case 35:
 			apn[1].a=angle;
 			apn[1].dist=avgDistance;
 		break;
@@ -65,7 +65,7 @@ boolean singlePing(int angle, aping *apn)
 			apn[2].dist=avgDistance;
 		break;
 
-		case 150:
+		case 145:
 			apn[3].a=angle;
 			apn[3].dist=avgDistance;
 		break;

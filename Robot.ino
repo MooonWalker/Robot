@@ -1,7 +1,9 @@
+#define DEBUG 1
 #define LED_PIN 13
-#define SERVOPIN 12
-#define TRIG_PIN 4
-#define ECHO_PIN 11
+#define SERVOPIN 12 //MISO
+#define TRIG_PIN 4	
+#define ECHO_PIN 11	//MOSI
+//pin D3 INT1
 #define MAX_DISTANCE 200 //Max distance to ping in cm
 
 #define  HALF 133  //motor speed slow
@@ -18,7 +20,9 @@
 #include "Servo.h"
 #include "Adafruit_MCP23017.h"
 #include "Adafruit_RGBLCDShield.h"
-#include "Adafruit_INA219.h"
+#include "Adafruit_INA219.h" 
+#include "Adafruit_Sensor.h"
+#include "Adafruit_HMC5883_U.h" //Magnetometer
 #include "NewPing.h"
 #include "IncFile1.h"
 
@@ -31,11 +35,11 @@ NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and ma
 MPU6050 accelgyro;
 Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 Adafruit_INA219 ina219; 
+//Adafruit_HMC5883_Unified compass = Adafruit_HMC5883_Unified(12345);
 
 float    base_x_accel;
 float    base_y_accel;
 float    base_z_accel;
-
 float    base_x_gyro;
 float    base_y_gyro;
 float    base_z_gyro;
@@ -78,45 +82,32 @@ enum STATE {STDBY, FWD, LOOKAROUND, TURNRIGHT, TURNLEFT, BACK};
 STATE actualState = STDBY;
 STATE prevState = STDBY;
 
-aping angularPings[10];
+aping angularPings[6];
 boolean singlePing(int angle, aping *aPs);
 
 void setup() 
 {
+	
 	//--------------------------------
-	lcd.begin(16, 2);
+	
 	ina219.begin();
 	//This signal is active low, so HIGH-to-LOW when interrupt
+	
+	initSonar();
+	//delay(20);
+	//compass.begin();		//init compass    
+    Serial.begin(9600);
+	Wire.begin();
+	lcd.begin(16, 2);
 	lcd.enableButtonInterrupt();
-
-	lcd.setBacklight(RED);	
+	lcd.setBacklight(RED);
 	lcd.setCursor(0, 0);
 	lcd.print("Initsonar...");
-	initSonar();
 	
-    // join I2C bus (I2Cdev library doesn't do this automatically)
-    // initialize serial communication
-    // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
-    // it's really up to you depending on your project)
-    Serial.begin(115200);
-	Wire.begin();
     // initialize device
     Serial.println("Initializing I2C devices...");
     accelgyro.initialize();
-	i2cData[0] = 7; // Set the sample rate to 1000Hz - 8kHz/(7+1) = 1000Hz
-	i2cData[1] = 0x00; // Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro filtering, 8 KHz sampling
-	i2cData[2] = 0x00; // Set Gyro Full Scale Range to �250deg/s
-	i2cData[3] = 0x00; // Set Accelerometer Full Scale Range to �2g
-	while(i2cWrite(0x19,i2cData,4,false)); // Write to all four registers at once
-	while(i2cWrite(0x6B,0x01,true)); // PLL with X axis gyroscope reference and disable sleep mode 
-	while(i2cRead(0x75,i2cData,1));
-	
-	if(i2cData[0] != 0x68) 
-	{ // Read "WHO_AM_I" register
-		 Serial.print(F("Error reading sensor"));
-		 while(1);
-	}
- 
+	Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed"); 
     // configure Arduino LED
     pinMode(LED_PIN, OUTPUT);
 	
@@ -124,19 +115,14 @@ void setup()
 	lcd.setCursor(0,0);
 	lcd.print("Calibrate sensors...");
 	calibrateSensors();
-	
-	 while(i2cRead(0x3B,i2cData,6));
-	 accX = ((i2cData[0] << 8) | i2cData[1]);
-	 accY = ((i2cData[2] << 8) | i2cData[3]);
-	 accZ = ((i2cData[4] << 8) | i2cData[5]);
 	 
 	 accYangle = (atan2(accX,accZ)+PI)*RAD_TO_DEG;
 	 accXangle = (atan2(accY,accZ)+PI)*RAD_TO_DEG;
-	 accZangle = (atan2(accY,accX)+PI)*RAD_TO_DEG;
+	
 	 
 	kalmanX.setAngle(accXangle); // Set starting angle
 	kalmanY.setAngle(accYangle);
-	kalmanZ.setAngle(accZangle);
+	
 	
 	gyroXangle = accXangle;
 	gyroYangle = accYangle;
@@ -144,7 +130,6 @@ void setup()
 	
 	compAngleX = accXangle;
 	compAngleY = accYangle;
-	compAngleZ = accZangle;
 	
 	timer = micros();
 	
@@ -167,14 +152,15 @@ void setup()
 
 void loop() 
 {	  
+	
 	switch(actualState)	//state machine
 	{
 		case STDBY:					//initial state		
 			myservo.detach();	
 			if(millis() - slowLoopDelay >= slowPeriod) //	.5Hz loop for pinging
 			{
-				object=singlePing(90, angularPings);				
-				busvoltage = ina219.getBusVoltage_V();
+				object=singlePing(90, angularPings);	
+				busvoltage = ina219.getBusVoltage_V();					
 				slowLoopDelay = millis();
 			}	
 			
@@ -225,14 +211,14 @@ void loop()
 			myservo.write(0);
 			singlePing(0,angularPings);
 			delay(500);
-			myservo.write(30);
-			singlePing(30,angularPings);
+			myservo.write(35);
+			singlePing(35,angularPings);
 			delay(500);			
 			myservo.write(180);
 			singlePing(180, angularPings);
 			delay(500);
-			myservo.write(150);
-			singlePing(150, angularPings);
+			myservo.write(145);
+			singlePing(145, angularPings);
 			delay(500);
 			myservo.write(90);
 			object=singlePing(90, angularPings);
@@ -281,6 +267,13 @@ void loop()
 		
 		case TURNRIGHT:
 			Serial.println("TURNRIGHT");
+			for(int i=0; i<5;i++)
+			{
+				Serial.print(angularPings[i].a);
+				Serial.print(" ; ");
+				Serial.println(angularPings[i].dist);
+			}
+			turnRight(90);
 			//-->FWD
 		break;
 		

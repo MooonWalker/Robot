@@ -58,42 +58,34 @@ void calibrateSensors()
 
 void readIMU()
 {
+	accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz); 
+		
+	accXangle = (atan2(ay,az)+PI)*RAD_TO_DEG;
+	accYangle = (atan2(ax,az)+PI)*RAD_TO_DEG;
+	accZangle = (atan2(ay,ax)+PI)*RAD_TO_DEG;
 	
-	while(i2cRead(0x3B,i2cData,14)); //read mpu6050
-	accX = ((i2cData[0] << 8) | i2cData[1]);
-	accY = ((i2cData[2] << 8) | i2cData[3]);
-	accZ = ((i2cData[4] << 8) | i2cData[5]);
-	tempRaw = ((i2cData[6] << 8) | i2cData[7]);
-	gyroX = ((i2cData[8] << 8) | i2cData[9]);
-	gyroY = ((i2cData[10] << 8) | i2cData[11]);
-	gyroZ = ((i2cData[12] << 8) | i2cData[13]);
-	
-	accXangle = (atan2(accY,accZ)+PI)*RAD_TO_DEG;
-	accYangle = (atan2(accX,accZ)+PI)*RAD_TO_DEG;
-	accZangle = (atan2(accY,accX)+PI)*RAD_TO_DEG;
-	
-	double gyroXrate = ((double)gyroX-base_x_gyro)/131.0;
-	double gyroYrate = (-((double)gyroY-base_y_gyro)/131.0);
-	double gyroZrate = ((double)gyroZ-base_z_gyro)/131.0;
+	double gyroXrate = ((double)gx-base_x_gyro)/131.0;
+	double gyroYrate = (-((double)gy-base_y_gyro)/131.0);
+	double gyroZrate = ((double)gz-base_z_gyro)/1.0323;
 	
 	gyroXangle += gyroXrate*((double)(micros()-timer)/1000000); // Calculate gyro angle without any filter
 	gyroYangle += gyroYrate*((double)(micros()-timer)/1000000);
-	gyroZangle += gyroZrate*((double)(micros()-timer)/1000000);
+	gyroZangle += gyroZrate*((double)(micros()-timer)/1000);
 	
 	//compAngleX = (0.93*(compAngleX+(gyroXrate*(double)(micros()-timer)/1000000)))+(0.07*accXangle); // Calculate the angle using a Complimentary filter
 	//compAngleY = (0.93*(compAngleY+(gyroYrate*(double)(micros()-timer)/1000000)))+(0.07*accYangle);
 	//
 	kalAngleX = kalmanX.getAngle(accXangle, gyroXrate, (double)(micros()-timer)/1000000); // Calculate the angle using a Kalman filter
 	kalAngleY = kalmanY.getAngle(accYangle, gyroYrate, (double)(micros()-timer)/1000000);
-	kalAngleZ = kalmanZ.getAngle(gyroZangle, gyroZrate, (double)(micros()-timer)/1000000);
-	
+	kalAngleZ = kalmanZ.getAngle(gyroZangle, gyroZrate, (double)(micros()-timer)/1000);	
 	
 	timer = micros();
 	
 	//read temperature
 	temp = ((double)tempRaw + 12412.0) / 340.0;
 	// display tab-separated accel/gyro x/y/z values
-	
+
+#ifdef DEBUG	
 	Serial.print("a/g/temp:\t");
 	//Serial.print(compAngleX); Serial.print("\t");
 	Serial.print(kalAngleX); Serial.print("\t");
@@ -104,13 +96,13 @@ void readIMU()
 	Serial.print(accYangle); Serial.print("\t");
 	
 	
-	Serial.print(kalAngleZ); Serial.print("\t");
+	Serial.print(kalAngleZ	); Serial.print("\t");
 	Serial.print(gyroZangle); Serial.print("\t");
 	
 	//Serial.print(gyroX); Serial.print("\t");
 	//Serial.print(gyroY); Serial.print("\t");
 	
-	Serial.println(temp);
+#endif // _DEBUG
 }
 
 

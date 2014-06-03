@@ -57,3 +57,52 @@ void motorsStop(bool brake)
 	
 	
 }
+
+bool turnRight(int crs)
+{
+	double offset=0, hdg=0;
+
+	motorInit();
+	calibrateSensors();
+	readIMU();
+	offset=gyroZangle;
+	hdg=offset-gyroZangle;
+
+	
+		do 
+		{
+			readIMU();
+			hdg=offset-gyroZangle;
+#ifdef DEBUG
+			Serial.println(hdg);
+			Serial.print("IMU Z: ");
+			Serial.println(gyroZangle);
+			Serial.print("offset ");
+			Serial.println(offset);
+			Serial.println(crs);
+			delay(2000);
+#endif
+		} while (hdg!=crs);
+		
+
+	//digitalWrite(IN_A1, LOW);
+	//digitalWrite(IN_B1, HIGH);
+	//digitalWrite(IN_A2, LOW);
+	//digitalWrite(IN_B2, HIGH);
+	//analogWrite(ENA, 230);//start driving motorA
+	//analogWrite(ENB, 230);//start driving motorB
+
+	return true; // turn completed
+}
+
+void turnLeft(int crs)
+{
+	motorInit();
+	
+	digitalWrite(IN_A1, HIGH);
+	digitalWrite(IN_B1, LOW);
+	digitalWrite(IN_A2, HIGH);
+	digitalWrite(IN_B2, LOW);
+	analogWrite(ENA, 230);//start driving motorA
+	analogWrite(ENB, 230);//start driving motorB
+}

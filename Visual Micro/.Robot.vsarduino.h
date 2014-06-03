@@ -29,6 +29,8 @@ void readIMU();
 void motorInit();
 void motorsFwd(int speed);
 void motorsStop(bool brake);
+bool turnRight(int crs);
+void turnLeft(int crs);
 void lcdPrintsSTBY();
 void lcdPrintsLook();
 void initSonar();

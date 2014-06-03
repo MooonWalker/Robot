@@ -76,10 +76,14 @@
             <Value>C:\Arduino\libraries\Servo\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -125,10 +129,14 @@
             <Value>C:\Arduino\libraries\Servo\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -172,7 +180,7 @@ build.core=arduino
 build.variant=standard
 runtime.ide.path=C:\Arduino
 build.system.path=C:\Arduino\hardware\arduino\system
-runtime.ide.version=101
+runtime.ide.version=105
 originalid=atmega328
 vm.platform.root.path=C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\arduino10x
 vm.core.include=arduino.h
@@ -203,14 +211,16 @@ build.board=AVR_ATMEGA328
 vm.boardsource.path=C:\Arduino\hardware\arduino
 vm.platformname.name=avr
 build.arch=AVR
+vm.runtime.compiler.showwarnings=false
 compiler.path=C:\Arduino\hardware\tools\avr\bin\
-includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219"  -I"c:\DATA\Dropbox\arduino\libraries\NewPing"  -I"C:\Arduino\libraries\Wire\utility"
+includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor"  -I"c:\DATA\Dropbox\arduino\libraries\NewPing"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified"  -I"C:\Arduino\libraries"  -I"C:\Arduino\hardware\arduino\libraries"  -I"C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers"  -I"c:\DATA\Dropbox\arduino\libraries"  -I"C:\Arduino\libraries\Wire\utility"
 build.path=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328
 build.project_name=Robot
 build.variant.path=C:\Arduino\hardware\arduino\variants\standard
 archive_file=core.a
-object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\NewPing\NewPing.cpp.o
-source_file=c:\DATA\Dropbox\arduino\libraries\NewPing\NewPing.cpp
+object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_HMC5883_Unified\Adafruit_HMC5883_U.cpp.o
+source_file=c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified\Adafruit_HMC5883_U.cpp
+object_files="C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Robot.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Wire\Wire.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Wire\utility\twi.c.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\I2Cdev\I2Cdev.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\MPU6050\MPU6050.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Servo\Servo.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_INA219\Adafruit_INA219.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_Sensor\Adafruit_Sensor.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\NewPing\NewPing.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_RGB_LCD_Shield_Library\Adafruit_MCP23017.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_RGB_LCD_Shield_Library\Adafruit_RGBLCDShield.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_HMC5883_Unified\Adafruit_HMC5883_U.cpp.o" 
 build.architecture=avr
 vmresolved.compiler.path=C:\Arduino\hardware\tools\avr\bin\
 vmresolved.tools.path=C:\Arduino\hardware\tools\avr
@@ -265,10 +275,14 @@ vmresolved.tools.path=C:\Arduino\hardware\tools\avr
             <Value>C:\Arduino\libraries\Servo\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -314,10 +328,14 @@ vmresolved.tools.path=C:\Arduino\hardware\tools\avr
             <Value>C:\Arduino\libraries\Servo\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\NewPing\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -361,7 +379,7 @@ build.core=arduino
 build.variant=standard
 runtime.ide.path=C:\Arduino
 build.system.path=C:\Arduino\hardware\arduino\system
-runtime.ide.version=101
+runtime.ide.version=105
 originalid=atmega328
 vm.platform.root.path=C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\arduino10x
 vm.core.include=arduino.h
@@ -392,14 +410,16 @@ build.board=AVR_ATMEGA328
 vm.boardsource.path=C:\Arduino\hardware\arduino
 vm.platformname.name=avr
 build.arch=AVR
+vm.runtime.compiler.showwarnings=false
 compiler.path=C:\Arduino\hardware\tools\avr\bin\
-includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219"  -I"c:\DATA\Dropbox\arduino\libraries\NewPing"  -I"C:\Arduino\libraries\Wire\utility"
+includes= -I"C:\Arduino\hardware\arduino\cores\arduino"  -I"C:\Arduino\hardware\arduino\variants\standard"  -I"C:\Arduino\libraries\Wire"  -I"c:\DATA\Dropbox\arduino\libraries\I2Cdev"  -I"c:\DATA\Dropbox\arduino\libraries\MPU6050"  -I"c:\DATA\Dropbox\arduino\libraries\Kalman"  -I"C:\Arduino\libraries\Servo"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_INA219"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_Sensor"  -I"c:\DATA\Dropbox\arduino\libraries\NewPing"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_RGB_LCD_Shield_Library"  -I"c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified"  -I"C:\Arduino\libraries"  -I"C:\Arduino\hardware\arduino\libraries"  -I"C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers"  -I"c:\DATA\Dropbox\arduino\libraries"  -I"C:\Arduino\libraries\Wire\utility"
 build.path=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328
 build.project_name=Robot
 build.variant.path=C:\Arduino\hardware\arduino\variants\standard
 archive_file=core.a
-object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\NewPing\NewPing.cpp.o
-source_file=c:\DATA\Dropbox\arduino\libraries\NewPing\NewPing.cpp
+object_file=C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_HMC5883_Unified\Adafruit_HMC5883_U.cpp.o
+source_file=c:\DATA\Dropbox\arduino\libraries\Adafruit_HMC5883_Unified\Adafruit_HMC5883_U.cpp
+object_files="C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Robot.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Wire\Wire.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Wire\utility\twi.c.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\I2Cdev\I2Cdev.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\MPU6050\MPU6050.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Servo\Servo.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_INA219\Adafruit_INA219.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_Sensor\Adafruit_Sensor.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\NewPing\NewPing.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_RGB_LCD_Shield_Library\Adafruit_MCP23017.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_RGB_LCD_Shield_Library\Adafruit_RGBLCDShield.cpp.o" "C:\Users\i021059\AppData\Local\VMicro\Arduino\Builds\Robot\atmega328\Adafruit_HMC5883_Unified\Adafruit_HMC5883_U.cpp.o" 
 build.architecture=avr
 vmresolved.compiler.path=C:\Arduino\hardware\tools\avr\bin\
 vmresolved.tools.path=C:\Arduino\hardware\tools\avr
