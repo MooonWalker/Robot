@@ -1,7 +1,7 @@
 #define DEBUG 1
 #define LED_PIN 13
 #define SERVOPIN 12 //MISO
-#define TRIG_PIN 4	
+#define TRIG_PIN 4	//obsolete
 #define ECHO_PIN 11	//MOSI
 //pin D3 INT1
 #define MAX_DISTANCE 200 //Max distance to ping in cm
