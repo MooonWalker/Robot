@@ -14,9 +14,6 @@
 #define RED 0x1
 
 #include "Wire.h"
-#include "I2Cdev.h"
-#include "MPU6050.h"
-
 #include "Kalman.h"
 #include "Servo.h"
 #include "Adafruit_MCP23017.h"
@@ -27,41 +24,16 @@
 #include "NewPing.h"
 #include "IncFile1.h"
 
-Kalman kalmanX; // Create the Kalman instances
-Kalman kalmanY;
-Kalman kalmanZ;
-
 Servo myservo;
 NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
-MPU6050 accelgyro;
+
 Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
 Adafruit_INA219 ina219; 
 //Adafruit_HMC5883_Unified compass = Adafruit_HMC5883_Unified(12345);
 
-float    base_x_accel;
-float    base_y_accel;
-float    base_z_accel;
-float    base_x_gyro;
-float    base_y_gyro;
-float    base_z_gyro;
 float busvoltage = 0;
 
-int16_t ax, ay, az;
-int16_t gx, gy, gz;
-int16_t accX, accY, accZ;
-int16_t tempRaw;
-int16_t gyroX, gyroY, gyroZ;
-
-double accXangle, accYangle, accZangle; // Angle calculate using the accelerometer
-double temp; // Temperature
-double gyroXangle, gyroYangle, gyroZangle; // Angle calculate using the gyro
-double compAngleX, compAngleY, compAngleZ; // Calculate the angle using a complementary filter
-double kalAngleX, kalAngleY, kalAngleZ; // Calculate the angle using a Kalman filter
-
 uint32_t timer;
-uint8_t i2cData[14]; // Buffer for I2C data
-const uint8_t IMUAddress = 0x68; // AD0 is logic low on the PCB
-const uint16_t I2C_TIMEOUT = 1000; // Used to check for errors in I2C communication
 
 const int loopPeriod = 55;          // a period of 55ms = a frequency of 25Hz
 const int slowPeriod = 2000;		// 2sec
@@ -87,13 +59,10 @@ aping angularPings[6];
 boolean singlePing(int angle, aping *aPs);
 
 void setup() 
-{
-	
-	//--------------------------------
-	
+{	
+	//--------------------------------	
 	ina219.begin();
-	//This signal is active low, so HIGH-to-LOW when interrupt
-	
+	//This signal is active low, so HIGH-to-LOW when interrupt	
 	initSonar();
 	//delay(20);
 	//compass.begin();		//init compass    
@@ -107,37 +76,16 @@ void setup()
 	
     // initialize device
     Serial.println("Initializing I2C devices...");
-    accelgyro.initialize();
-	Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed"); 
-    // configure Arduino LED
-    pinMode(LED_PIN, OUTPUT);
-	
+   
 	lcd.clear();
 	lcd.setCursor(0,0);
 	lcd.print("Calibrate sensors...");
-	calibrateSensors();
-	 
-	 accYangle = (atan2(accX,accZ)+PI)*RAD_TO_DEG;
-	 accXangle = (atan2(accY,accZ)+PI)*RAD_TO_DEG;
-	
-	 
-	kalmanX.setAngle(accXangle); // Set starting angle
-	kalmanY.setAngle(accYangle);
-	
-	
-	gyroXangle = accXangle;
-	gyroYangle = accYangle;
-	gyroZangle = accZangle;
-	
-	compAngleX = accXangle;
-	compAngleY = accYangle;
 	
 	timer = micros();
 	
 	lcd.clear();
 	lcd.setCursor(0,0);
 	lcd.print("Motorinit...");
-	motorInit();
 	
 	myservo.attach(SERVOPIN);
 	delay(1000);
@@ -191,7 +139,6 @@ void loop()
 					{
 						lcd.print("START    ");
 						start=true;
-						readIMU();
 						actualState = LOOKAROUND;  //next state
 						lcd.clear();
 					}
@@ -206,7 +153,6 @@ void loop()
 		
 		case LOOKAROUND:
 			Serial.println("LOOKAROUND");
-			readIMU();
 			
 			myservo.attach(SERVOPIN);
 			myservo.write(0);
@@ -252,10 +198,10 @@ void loop()
 				timeLoopDelay = millis();
 			}
 			Serial.println("FWD");
-			motorsFwd(HALF);
+			//motorsFwd(HALF);
 			if(object) 
 			{
-				motorsStop(BRAKE);
+				//motorsStop(BRAKE);
 				actualState = LOOKAROUND;
 			}
 			start=false;
@@ -274,7 +220,7 @@ void loop()
 				Serial.print(" ; ");
 				Serial.println(angularPings[i].dist);
 			}
-			turnRight(90);
+			//turnRight(90);
 			//-->FWD
 		break;
 		
@@ -290,38 +236,6 @@ void loop()
 	
 }
 
-uint8_t i2cWrite(uint8_t registerAddress, uint8_t data, bool sendStop) {
-	return i2cWrite(registerAddress,&data,1,sendStop); // Returns 0 on success
-}
-
-uint8_t i2cWrite(uint8_t registerAddress, uint8_t* data, uint8_t length, bool sendStop) {
-	Wire.beginTransmission(IMUAddress);
-	Wire.write(registerAddress);
-	Wire.write(data, length);
-	return Wire.endTransmission(sendStop); // Returns 0 on success
-}
-
-uint8_t i2cRead(uint8_t registerAddress, uint8_t* data, uint8_t nbytes) {
-	uint32_t timeOutTimer;
-	Wire.beginTransmission(IMUAddress);
-	Wire.write(registerAddress);
-	if(Wire.endTransmission(false)) // Don't release the bus
-	return 1; // Error in communication
-	Wire.requestFrom(IMUAddress, nbytes,(uint8_t)true); // Send a repeated start and then release the bus after reading
-	for(uint8_t i = 0; i < nbytes; i++) {
-		if(Wire.available())
-		data[i] = Wire.read();
-		else {
-			timeOutTimer = micros();
-			while(((micros() - timeOutTimer) < I2C_TIMEOUT) && !Wire.available());
-			if(Wire.available())
-			data[i] = Wire.read();
-			else
-			return 2; // Error in communication
-		}
-	}
-	return 0; // Success
-}
 
 void ISR_Button()
 {

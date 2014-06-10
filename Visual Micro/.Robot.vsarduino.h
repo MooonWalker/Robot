@@ -18,18 +18,8 @@ extern "C" void __cxa_pure_virtual() {;}
 
 //
 //
-uint8_t i2cWrite(uint8_t registerAddress, uint8_t data, bool sendStop);
-uint8_t i2cWrite(uint8_t registerAddress, uint8_t* data, uint8_t length, bool sendStop);
-uint8_t i2cRead(uint8_t registerAddress, uint8_t* data, uint8_t nbytes);
 void ISR_Button();
 void handleKeypress();
-void calibrateSensors();
-void readIMU();
-void motorInit();
-void motorsFwd(int speed);
-void motorsStop(bool brake);
-bool turnRight(int crs);
-void turnLeft(int crs);
 void lcdPrintsSTBY();
 void lcdPrintsLook();
 void initSonar();
@@ -40,8 +30,6 @@ char whereToTurn(aping *apg);
 #include "C:\Arduino\hardware\arduino\variants\mega\pins_arduino.h" 
 #include "C:\Arduino\hardware\arduino\cores\arduino\arduino.h"
 #include "C:\DATA\Dropbox\Robot\Robot.ino"
-#include "C:\DATA\Dropbox\Robot\IMU.ino"
 #include "C:\DATA\Dropbox\Robot\IncFile1.h"
-#include "C:\DATA\Dropbox\Robot\Motor.ino"
 #include "C:\DATA\Dropbox\Robot\Prints.ino"
 #include "C:\DATA\Dropbox\Robot\Sonar.ino"

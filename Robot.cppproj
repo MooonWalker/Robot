@@ -66,10 +66,6 @@
             <Value>C:\Arduino\hardware\arduino\variants\mega</Value>
             <Value>C:\Arduino\libraries\Wire</Value>
             <Value>C:\Arduino\libraries\Wire\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
@@ -118,10 +114,6 @@
             <Value>C:\Arduino\hardware\arduino\variants\mega</Value>
             <Value>C:\Arduino\libraries\Wire</Value>
             <Value>C:\Arduino\libraries\Wire\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
@@ -250,10 +242,6 @@ build.arch=AVR
             <Value>C:\Arduino\hardware\arduino\variants\mega</Value>
             <Value>C:\Arduino\libraries\Wire</Value>
             <Value>C:\Arduino\libraries\Wire\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
@@ -302,10 +290,6 @@ build.arch=AVR
             <Value>C:\Arduino\hardware\arduino\variants\mega</Value>
             <Value>C:\Arduino\libraries\Wire</Value>
             <Value>C:\Arduino\libraries\Wire\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
-            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
             <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries\Servo</Value>
@@ -408,12 +392,6 @@ build.arch=AVR
     </VisualMicroSettings>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="IMU.ino">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="Motor.ino">
-      <SubType>compile</SubType>
-    </None>
     <None Include="Prints.ino">
       <SubType>compile</SubType>
     </None>
