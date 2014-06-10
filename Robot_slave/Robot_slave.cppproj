@@ -28,24 +28,26 @@
     <BootSegment>0</BootSegment>
     <AsfFrameworkConfig>
       <framework-data xmlns="">
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.17.0" />
-  </dependencies>
-</framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.17.0" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
       <AvrGccCpp>
+        <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
         <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
         <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
         <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
         <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
         <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcc.compiler.symbols.DefSymbols>
@@ -63,6 +65,14 @@
           <ListValues>
             <Value>C:\Arduino\hardware\arduino\cores\arduino</Value>
             <Value>C:\Arduino\hardware\arduino\variants\standard</Value>
+            <Value>C:\Arduino\libraries\Wire</Value>
+            <Value>C:\Arduino\libraries\Wire\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -96,6 +106,14 @@
           <ListValues>
             <Value>C:\Arduino\hardware\arduino\cores\arduino</Value>
             <Value>C:\Arduino\hardware\arduino\variants\standard</Value>
+            <Value>C:\Arduino\libraries\Wire</Value>
+            <Value>C:\Arduino\libraries\Wire\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -114,18 +132,83 @@
         <avrgcccpp.compiler.optimization.DebugLevel>Default (-g2)</avrgcccpp.compiler.optimization.DebugLevel>
         <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
         <avrgcccpp.compiler.miscellaneous.OtherFlags>-include=arduino.h</avrgcccpp.compiler.miscellaneous.OtherFlags>
-        <avrgcccpp.linker.memorysettings.Comment>&lt;segmentname&gt;=&lt;address&gt;, for example  .boot=0xff</avrgcccpp.linker.memorysettings.Comment>
         <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
       </AvrGccCpp>
     </ToolchainSettings>
+    <VisualMicroSettings>
+      <VisualMicroSettings>
+        <arduino.board.name>atmega328</arduino.board.name>
+        <arduino.board.desc>Arduino Duemilanove w/ ATmega328</arduino.board.desc>
+        <arduino.board.property_bag>name=Arduino Duemilanove w/ ATmega328
+upload.protocol=arduino
+upload.maximum_size=30720
+upload.speed=57600
+bootloader.low_fuses=0xFF
+bootloader.high_fuses=0xDA
+bootloader.extended_fuses=0x05
+bootloader.path=atmega
+bootloader.file=ATmegaBOOT_168_atmega328.hex
+bootloader.unlock_bits=0x3F
+bootloader.lock_bits=0x0F
+build.mcu=atmega328p
+build.f_cpu=16000000L
+build.core=arduino
+build.variant=standard
+runtime.ide.path=C:\Arduino
+build.system.path=C:\Arduino\hardware\arduino\system
+runtime.ide.version=105
+originalid=atmega328
+vm.platform.root.path=C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\arduino10x
+vm.core.include=arduino.h
+ide.hint=Arduino 0023 and 1.0.x Ide
+ide.location.key=Arduino
+ide.location.ide.winreg=Arduino 1.0.x Application
+ide.location.sketchbook.winreg=Arduino 1.0.x Sketchbook
+ide.location.sketchbook.preferences=sketchbook.path
+ide.location.sketchbook.default=%MYDOCUMENTS%\arduino
+ide.location.preferences=%VM_APPDATA_ROAMING%\arduino\preferences.txt
+ide.default.package=arduino
+ide.default.platform=avr
+ide.multiplatform=true
+ide.includes=arduino.h
+ide.platformswithoutpackage=true
+ide.includes.fallback=wprogram.h
+ide.extension=ino
+ide.extension.fallback=pde
+ide.versionLTEQ=149
+ide.exe=arduino.exe
+ide.hosts=atmel
+ide.url=http://arduino.cc/en/Main/Software
+vm.debug=true
+software=ARDUINO
+ide.appid=arduino10x
+location.sketchbook=c:\DATA\Dropbox\arduino
+build.board=AVR_ATMEGA328
+vm.boardsource.path=C:\Arduino\hardware\arduino
+vm.platformname.name=avr
+build.arch=AVR
+</arduino.board.property_bag>
+        <arduino.build.mcu>atmega328p</arduino.build.mcu>
+        <arduino.build.f_cpu>16000000L</arduino.build.f_cpu>
+        <arduino.build.core>arduino</arduino.build.core>
+        <arduino.upload.protocol>arduino</arduino.upload.protocol>
+        <arduino.upload.speed>57600</arduino.upload.speed>
+        <arduino.upload.maximum_size>30720</arduino.upload.maximum_size>
+        <visualmicro.application.name>arduino10x</visualmicro.application.name>
+        <visualmicro.package.name>arduino</visualmicro.package.name>
+        <visualmicro.platform.name>avr</visualmicro.platform.name>
+      </VisualMicroSettings>
+    </VisualMicroSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrGccCpp>
+        <avrgcc.common.optimization.RelaxBranches>True</avrgcc.common.optimization.RelaxBranches>
         <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
         <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
         <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
         <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
         <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcc.compiler.symbols.DefSymbols>
@@ -143,6 +226,14 @@
           <ListValues>
             <Value>C:\Arduino\hardware\arduino\cores\arduino</Value>
             <Value>C:\Arduino\hardware\arduino\variants\standard</Value>
+            <Value>C:\Arduino\libraries\Wire</Value>
+            <Value>C:\Arduino\libraries\Wire\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -176,6 +267,14 @@
           <ListValues>
             <Value>C:\Arduino\hardware\arduino\cores\arduino</Value>
             <Value>C:\Arduino\hardware\arduino\variants\standard</Value>
+            <Value>C:\Arduino\libraries\Wire</Value>
+            <Value>C:\Arduino\libraries\Wire\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\I2Cdev\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\MPU6050\utility</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman</Value>
+            <Value>c:\DATA\Dropbox\arduino\libraries\Kalman\utility</Value>
             <Value>C:\Arduino\libraries</Value>
             <Value>C:\Arduino\hardware\arduino\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
@@ -194,19 +293,82 @@
         <avrgcccpp.compiler.optimization.DebugLevel>Default (-g2)</avrgcccpp.compiler.optimization.DebugLevel>
         <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
         <avrgcccpp.compiler.miscellaneous.OtherFlags>-include=arduino.h</avrgcccpp.compiler.miscellaneous.OtherFlags>
-        <avrgcccpp.linker.memorysettings.Comment>&lt;segmentname&gt;=&lt;address&gt;, for example  .boot=0xff</avrgcccpp.linker.memorysettings.Comment>
         <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
       </AvrGccCpp>
     </ToolchainSettings>
+    <VisualMicroSettings>
+      <VisualMicroSettings>
+        <arduino.board.name>atmega328</arduino.board.name>
+        <arduino.board.desc>Arduino Duemilanove w/ ATmega328</arduino.board.desc>
+        <arduino.board.property_bag>name=Arduino Duemilanove w/ ATmega328
+upload.protocol=arduino
+upload.maximum_size=30720
+upload.speed=57600
+bootloader.low_fuses=0xFF
+bootloader.high_fuses=0xDA
+bootloader.extended_fuses=0x05
+bootloader.path=atmega
+bootloader.file=ATmegaBOOT_168_atmega328.hex
+bootloader.unlock_bits=0x3F
+bootloader.lock_bits=0x0F
+build.mcu=atmega328p
+build.f_cpu=16000000L
+build.core=arduino
+build.variant=standard
+runtime.ide.path=C:\Arduino
+build.system.path=C:\Arduino\hardware\arduino\system
+runtime.ide.version=105
+originalid=atmega328
+vm.platform.root.path=C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\arduino10x
+vm.core.include=arduino.h
+ide.hint=Arduino 0023 and 1.0.x Ide
+ide.location.key=Arduino
+ide.location.ide.winreg=Arduino 1.0.x Application
+ide.location.sketchbook.winreg=Arduino 1.0.x Sketchbook
+ide.location.sketchbook.preferences=sketchbook.path
+ide.location.sketchbook.default=%MYDOCUMENTS%\arduino
+ide.location.preferences=%VM_APPDATA_ROAMING%\arduino\preferences.txt
+ide.default.package=arduino
+ide.default.platform=avr
+ide.multiplatform=true
+ide.includes=arduino.h
+ide.platformswithoutpackage=true
+ide.includes.fallback=wprogram.h
+ide.extension=ino
+ide.extension.fallback=pde
+ide.versionLTEQ=149
+ide.exe=arduino.exe
+ide.hosts=atmel
+ide.url=http://arduino.cc/en/Main/Software
+vm.debug=true
+software=ARDUINO
+ide.appid=arduino10x
+location.sketchbook=c:\DATA\Dropbox\arduino
+build.board=AVR_ATMEGA328
+vm.boardsource.path=C:\Arduino\hardware\arduino
+vm.platformname.name=avr
+build.arch=AVR
+</arduino.board.property_bag>
+        <arduino.build.mcu>atmega328p</arduino.build.mcu>
+        <arduino.build.f_cpu>16000000L</arduino.build.f_cpu>
+        <arduino.build.core>arduino</arduino.build.core>
+        <arduino.upload.protocol>arduino</arduino.upload.protocol>
+        <arduino.upload.speed>57600</arduino.upload.speed>
+        <arduino.upload.maximum_size>30720</arduino.upload.maximum_size>
+        <visualmicro.application.name>arduino10x</visualmicro.application.name>
+        <visualmicro.package.name>arduino</visualmicro.package.name>
+        <visualmicro.platform.name>avr</visualmicro.platform.name>
+      </VisualMicroSettings>
+    </VisualMicroSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IncFile1.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Robot_slave.ino">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="MyClass.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="MyClass.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Visual Micro\.Robot_slave.vsarduino.h">
@@ -215,6 +377,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Visual Micro\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IMU.ino">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Motor.ino">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

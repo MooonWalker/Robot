@@ -19,9 +19,21 @@ extern "C" void __cxa_pure_virtual() {;}
 
 //
 //
+uint8_t i2cWrite(uint8_t registerAddress, uint8_t data, bool sendStop);
+uint8_t i2cWrite(uint8_t registerAddress, uint8_t* data, uint8_t length, bool sendStop);
+uint8_t i2cRead(uint8_t registerAddress, uint8_t* data, uint8_t nbytes);
+void calibrateSensors();
+void readIMU();
+void motorInit();
+void motorsFwd(int speed);
+void motorsStop(bool brake);
+bool turnRight(int crs);
+void turnLeft(int crs);
 
 #include "C:\Arduino\hardware\arduino\variants\standard\pins_arduino.h" 
 #include "C:\Arduino\hardware\arduino\cores\arduino\arduino.h"
 #include "C:\DATA\Dropbox\Robot\Robot_slave\Robot_slave.ino"
-#include "C:\DATA\Dropbox\Robot\Robot_slave\MyClass.cpp"
+#include "C:\DATA\Dropbox\Robot\Robot_slave\IMU.ino"
+#include "C:\DATA\Dropbox\Robot\Robot_slave\IncFile1.h"
+#include "C:\DATA\Dropbox\Robot\Robot_slave\Motor.ino"
 #include "C:\DATA\Dropbox\Robot\Robot_slave\MyClass.h"
