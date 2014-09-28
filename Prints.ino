@@ -23,7 +23,7 @@ void lcdPrintsLook()
 	lcd.print("O: ");
 	lcd.print(distanceCm, DEC);
 	lcd.print("cm");
-	lcd.setCursor(15, 0);
+	lcd.setCursor(14, 0);
 	lcd.print( object);
 	
 	

@@ -1,3 +1,26 @@
+/*********************
+
+LCD
+
+Sárga drót INT1!!
+Billentyûmegszakítás
+
+SCL zöld drót
+SDA fehér drót.
+
+Note: Beware the mismatch in interrupt numbers used on MEGA2560 versus the Arduino
+Attach/DetachInterrupt commands, as follows:
+
+Arduino             MEGA2560
+int.0	pin D2   interrupt/counter 4
+int.1	pin D3   interrupt/counter 5
+int.2	pin D21  interrupt/counter 0
+int.3	pin D20  interrupt/counter 1
+int.4	pin D19  interrupt/counter 2
+int.5	pin D18  interrupt/counter 3 (THIS IS WHAT IS USED BELOW) 
+
+
+**********************/
 #define DEBUG 1
 #define LED_PIN 13
 #define SERVOPIN 12 //MISO
@@ -44,7 +67,7 @@ const int  numberOfPings=10;
 
 boolean blinkState = false;
 boolean moving = false;
-static boolean object = false;
+boolean object = false;
 boolean start = false;
 char direction =0;		//where to turn after lookaround
 
@@ -63,7 +86,7 @@ void setup()
 	//--------------------------------	
 	ina219.begin();
 	//This signal is active low, so HIGH-to-LOW when interrupt	
-	initSonar();
+	
 	//delay(20);
 	//compass.begin();		//init compass    
     Serial.begin(9600);
@@ -73,9 +96,9 @@ void setup()
 	lcd.setBacklight(RED);
 	lcd.setCursor(0, 0);
 	lcd.print("Initsonar...");
-	
+	initSonar();
     // initialize device
-    Serial.println("Initializing I2C devices...");
+    delay(200);
    
 	lcd.clear();
 	lcd.setCursor(0,0);
@@ -86,7 +109,6 @@ void setup()
 	lcd.clear();
 	lcd.setCursor(0,0);
 	lcd.print("Motorinit...");
-	
 	myservo.attach(SERVOPIN);
 	delay(1000);
 	myservo.write(0);
@@ -96,7 +118,7 @@ void setup()
 	myservo.write(90);
 	delay(500);
 	lcd.clear();
-	attachInterrupt(1,ISR_Button,FALLING);
+	attachInterrupt(4,ISR_Button,FALLING);
 }
 
 void loop() 
@@ -108,13 +130,14 @@ void loop()
 			myservo.detach();	
 			if(millis() - slowLoopDelay >= slowPeriod) //	.5Hz loop for pinging
 			{
-				object=singlePing(90, angularPings);	
-				busvoltage = ina219.getBusVoltage_V();					
+				//object=singlePing(90, angularPings);	
+				//busvoltage = ina219.getBusVoltage_V();					
 				slowLoopDelay = millis();
 			}	
 			
 			if (isTriggered) //button interrupt1 fired
 			{	
+				Serial.println("trigg");
 				handleKeypress();
 				if (buttons)
 				{
@@ -147,6 +170,7 @@ void loop()
 			}		//if (isTriggered)
 			else
 			{
+				Serial.println("else");
 				lcdPrintsSTBY();
 			}		
 		break;
@@ -169,6 +193,7 @@ void loop()
 			delay(500);
 			myservo.write(90);
 			object=singlePing(90, angularPings);
+			Serial.println(object);
 			delay(500);
 			
 			lcdPrintsLook();
